@@ -1,0 +1,14 @@
+{
+  "appName" : "PizzaCounter",
+  "genericErrorMessage": "Generic Error",
+  "tryAgainButtonLabel": "Try Again",
+  "noInternetMessage" : "Looks like there's no internet , \n Try to connect into internet ;)",
+  "emptyFieldError": "Empty Field",
+  "invalidFieldError": "Invalid Field",
+  "nameLabel": "Name",
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "passwordConfirmationLabel": "Password Confirmation",
+  "pizzaCounterTabLabel": "Counter",
+  "pizzaGraphsTabLabel": "Graphs"
+}

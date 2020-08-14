@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pizza_counter/presentation/common/adaptive_app.dart';
-import 'package:pizza_counter/presentation/common/televi_general_provider.dart';
+import 'package:pizza_counter/presentation/common/pizza_counter_general_provider.dart';
 
 import 'generated/l10n.dart';
 
@@ -34,7 +34,7 @@ class MainWidget extends StatefulWidget {
 
 class MainWidgetState extends State<MainWidget> {
   @override
-  Widget build(BuildContext context) => TeleviGeneralProvider(
+  Widget build(BuildContext context) => PizzaCounterGeneralProvider(
     child: AdaptiveApp(
       localizationsDelegates: [
         S.delegate,

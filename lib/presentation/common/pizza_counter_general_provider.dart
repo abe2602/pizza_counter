@@ -15,8 +15,8 @@ import 'package:pizza_counter/presentation/home_screen.dart';
 import 'package:pizza_counter/presentation/pizza_counter/pizza_counter_page.dart';
 import 'package:pizza_counter/presentation/pizza_graphs/pizza_graphs_page.dart';
 
-class TeleviGeneralProvider extends StatelessWidget {
-  const TeleviGeneralProvider({
+class PizzaCounterGeneralProvider extends StatelessWidget {
+  const PizzaCounterGeneralProvider({
     @required this.child,
   }) : assert(child != null);
 

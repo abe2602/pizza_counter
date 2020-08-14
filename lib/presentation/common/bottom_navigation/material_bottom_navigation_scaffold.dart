@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pizza_counter/presentation/common/pizza_counter_colors.dart';
 import 'package:provider/provider.dart';
 
 import 'bottom_navigation_tab.dart';
@@ -109,6 +110,8 @@ class _MaterialBottomNavigationScaffoldState
               .toList(),
         ),
         bottomNavigationBar: BottomNavigationBar(
+          selectedItemColor: PizzaCounterColors.lightBrown,
+          unselectedItemColor: PizzaCounterColors.mediumGray,
           currentIndex: widget.selectedIndex,
           items: materialNavigationBarItems
               .map(

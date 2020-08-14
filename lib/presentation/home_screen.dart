@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:pizza_counter/generated/l10n.dart';
 import 'package:pizza_counter/presentation/common/bottom_navigation/adaptive_bottom_navigation_scaffold.dart';
 import 'package:pizza_counter/presentation/common/bottom_navigation/bottom_navigation_tab.dart';
+import 'package:pizza_counter/presentation/common/pizza_counter_colors.dart';
 import 'package:pizza_counter/presentation/common/route_name_builder.dart';
 
 /// Não devemos instanciar os itens da BottomNavigation dentro do build, uma vez
@@ -21,7 +22,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _navigationBarItems ??= [
       BottomNavigationTab(
         bottomNavigationBarItem: BottomNavigationBarItem(
-          title: Text(S.of(context).pizzaCounterTabLabel),
+          title: Text(
+            S.of(context).pizzaCounterTabLabel,
+          ),
+          activeIcon: IconTheme(
+            data: IconThemeData(color: PizzaCounterColors.lightBrown),
+            child: const Icon(Icons.local_pizza_outlined),
+          ),
           icon: const Icon(Icons.local_pizza_outlined),
         ),
         navigatorKey: GlobalKey<NavigatorState>(),
@@ -29,7 +36,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       BottomNavigationTab(
         bottomNavigationBarItem: BottomNavigationBarItem(
-          title: Text(S.of(context).pizzaGraphsTabLabel),
+          title: Text(
+            S.of(context).pizzaGraphsTabLabel,
+          ),
+          activeIcon: IconTheme(
+            data: IconThemeData(color: PizzaCounterColors.lightBrown),
+            child: const Icon(Icons.graphic_eq_outlined),
+          ),
           icon: const Icon(Icons.graphic_eq_outlined),
         ),
         navigatorKey: GlobalKey<NavigatorState>(),

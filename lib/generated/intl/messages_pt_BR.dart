@@ -21,17 +21,22 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "addLabel" : MessageLookupByLibrary.simpleMessage("Adicionar"),
+    "addPlayerLabel" : MessageLookupByLibrary.simpleMessage("Adicione um competidor!"),
     "appName" : MessageLookupByLibrary.simpleMessage("PizzaCounter"),
+    "cancelLabel" : MessageLookupByLibrary.simpleMessage("Cancelar"),
     "emailLabel" : MessageLookupByLibrary.simpleMessage("Email"),
     "emptyFieldError" : MessageLookupByLibrary.simpleMessage("Campo Vazio"),
     "genericErrorMessage" : MessageLookupByLibrary.simpleMessage("Erro genérico"),
     "invalidFieldError" : MessageLookupByLibrary.simpleMessage("Formato Invalido"),
     "nameLabel" : MessageLookupByLibrary.simpleMessage("Nome"),
     "noInternetMessage" : MessageLookupByLibrary.simpleMessage("Parece que você está sem internet! , \n Tente conectar-se em alguma rede! ;)"),
+    "noPlayersEmptyStatePrimaryText" : MessageLookupByLibrary.simpleMessage("Não há competidores no momento :(."),
+    "noPlayersEmptyStateSecondaryText" : MessageLookupByLibrary.simpleMessage("Adicione alguém e comece a competir!"),
     "passwordConfirmationLabel" : MessageLookupByLibrary.simpleMessage("Confirmação de Senha"),
     "passwordLabel" : MessageLookupByLibrary.simpleMessage("Senha"),
+    "pizzaChartsTabLabel" : MessageLookupByLibrary.simpleMessage("Gráficos"),
     "pizzaCounterTabLabel" : MessageLookupByLibrary.simpleMessage("Contador"),
-    "pizzaGraphsTabLabel" : MessageLookupByLibrary.simpleMessage("Gráficos"),
     "tryAgainButtonLabel" : MessageLookupByLibrary.simpleMessage("Tente Novamente")
   };
 }

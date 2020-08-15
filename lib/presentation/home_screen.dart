@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
             S.of(context).pizzaCounterTabLabel,
           ),
           activeIcon: IconTheme(
-            data: IconThemeData(color: PizzaCounterColors.lightBrown),
+            data: IconThemeData(color: PizzaCounterColors.sauceRed),
             child: const Icon(Icons.local_pizza_outlined),
           ),
           icon: const Icon(Icons.local_pizza_outlined),
@@ -37,10 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
       BottomNavigationTab(
         bottomNavigationBarItem: BottomNavigationBarItem(
           title: Text(
-            S.of(context).pizzaGraphsTabLabel,
+            S.of(context).pizzaChartsTabLabel,
           ),
           activeIcon: IconTheme(
-            data: IconThemeData(color: PizzaCounterColors.lightBrown),
+            data: IconThemeData(color: PizzaCounterColors.sauceRed),
             child: const Icon(Icons.graphic_eq_outlined),
           ),
           icon: const Icon(Icons.graphic_eq_outlined),

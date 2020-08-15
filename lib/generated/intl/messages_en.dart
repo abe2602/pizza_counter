@@ -21,17 +21,22 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "addLabel" : MessageLookupByLibrary.simpleMessage("Add"),
+    "addPlayerLabel" : MessageLookupByLibrary.simpleMessage("Add a new player!"),
     "appName" : MessageLookupByLibrary.simpleMessage("PizzaCounter"),
+    "cancelLabel" : MessageLookupByLibrary.simpleMessage("Cancel"),
     "emailLabel" : MessageLookupByLibrary.simpleMessage("Email"),
     "emptyFieldError" : MessageLookupByLibrary.simpleMessage("Empty Field"),
     "genericErrorMessage" : MessageLookupByLibrary.simpleMessage("Generic Error"),
     "invalidFieldError" : MessageLookupByLibrary.simpleMessage("Invalid Field"),
     "nameLabel" : MessageLookupByLibrary.simpleMessage("Name"),
     "noInternetMessage" : MessageLookupByLibrary.simpleMessage("Looks like there\'s no internet , \n Try to connect into internet ;)"),
+    "noPlayersEmptyStatePrimaryText" : MessageLookupByLibrary.simpleMessage("There\'s no players right now :(."),
+    "noPlayersEmptyStateSecondaryText" : MessageLookupByLibrary.simpleMessage("Add some and start to competing!"),
     "passwordConfirmationLabel" : MessageLookupByLibrary.simpleMessage("Password Confirmation"),
     "passwordLabel" : MessageLookupByLibrary.simpleMessage("Password"),
+    "pizzaChartsTabLabel" : MessageLookupByLibrary.simpleMessage("Charts"),
     "pizzaCounterTabLabel" : MessageLookupByLibrary.simpleMessage("Counter"),
-    "pizzaGraphsTabLabel" : MessageLookupByLibrary.simpleMessage("Graphs"),
     "tryAgainButtonLabel" : MessageLookupByLibrary.simpleMessage("Try Again")
   };
 }

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pizza_counter/generated/l10n.dart';
 import 'package:pizza_counter/presentation/common/input_status_vm.dart';
+import 'package:pizza_counter/presentation/common/pizza_counter_colors.dart';
 
 class FormTextField extends StatelessWidget {
   const FormTextField(
@@ -74,7 +75,23 @@ class FormTextField extends StatelessWidget {
             decoration: InputDecoration(
               labelText: labelText,
               errorText: errorMessage,
+              enabledBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.black87,
+                ),
+              ),
+              focusedBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.black87,
+                ),
+              ),
+              border: const UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.black87,
+                ),
+              ),
             ),
+            cursorColor: Colors.black87,
             keyboardType: keyboardType,
             textInputAction: textInputAction,
             onEditingComplete: onEditingComplete,

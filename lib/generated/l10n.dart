@@ -143,11 +143,61 @@ class S {
     );
   }
 
-  /// `Graphs`
-  String get pizzaGraphsTabLabel {
+  /// `Charts`
+  String get pizzaChartsTabLabel {
     return Intl.message(
-      'Graphs',
-      name: 'pizzaGraphsTabLabel',
+      'Charts',
+      name: 'pizzaChartsTabLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancelLabel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancelLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add`
+  String get addLabel {
+    return Intl.message(
+      'Add',
+      name: 'addLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a new player!`
+  String get addPlayerLabel {
+    return Intl.message(
+      'Add a new player!',
+      name: 'addPlayerLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There's no players right now :(.`
+  String get noPlayersEmptyStatePrimaryText {
+    return Intl.message(
+      'There\'s no players right now :(.',
+      name: 'noPlayersEmptyStatePrimaryText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add some and start to competing!`
+  String get noPlayersEmptyStateSecondaryText {
+    return Intl.message(
+      'Add some and start to competing!',
+      name: 'noPlayersEmptyStateSecondaryText',
       desc: '',
       args: [],
     );

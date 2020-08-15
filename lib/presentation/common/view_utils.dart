@@ -141,3 +141,4 @@ extension ObservableViewUtils<T> on Stream<T> {
         (data) => sink.add(data),
       );
 }
+

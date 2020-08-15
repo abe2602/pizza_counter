@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:domain/use_case/validate_email_uc.dart';
-import 'package:domain/use_case/validate_full_name_uc.dart';
-import 'package:domain/use_case/validate_password_confirmation_uc.dart';
-import 'package:domain/use_case/validate_password_uc.dart';
+import 'package:domain/use_case/validate_empty_text_uc.dart';
+import 'package:domain/data_repository/pizza_counter_data_repository.dart';
+import 'package:domain/use_case/get_players_list_uc.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pizza_counter/data/cache/pizza_counter_cds.dart';
+import 'package:pizza_counter/data/repository/pizza_counter_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:rxdart/rxdart.dart';
@@ -13,7 +14,7 @@ import 'package:pizza_counter/presentation/common/bottom_navigation/navigation_u
 import 'package:pizza_counter/presentation/common/route_name_builder.dart';
 import 'package:pizza_counter/presentation/home_screen.dart';
 import 'package:pizza_counter/presentation/pizza_counter/pizza_counter_page.dart';
-import 'package:pizza_counter/presentation/pizza_graphs/pizza_graphs_page.dart';
+import 'package:pizza_counter/presentation/pizza_charts/pizza_charts_page.dart';
 
 class PizzaCounterGeneralProvider extends StatelessWidget {
   const PizzaCounterGeneralProvider({
@@ -50,11 +51,12 @@ class PizzaCounterGeneralProvider extends StatelessWidget {
                 handlerFunc: (context, params) =>
                     PizzaCounterPage.create(context),
               ),
-            )..define(
+            )
+            ..define(
               RouteNameBuilder.pizzaGraphResource,
               handler: Handler(
                 handlerFunc: (context, params) =>
-                    PizzaGraphsPage.create(context),
+                    PizzaChartsPage.create(context),
               ),
             ),
         ),
@@ -76,6 +78,9 @@ class PizzaCounterGeneralProvider extends StatelessWidget {
       ];
 
   List<SingleChildWidget> _buildCDSProviders() => [
+        Provider<PizzaCounterCDS>(
+          create: (_) => PizzaCounterCDS(),
+        ),
       ];
 
   List<SingleChildWidget> _buildRDSProviders() => [
@@ -83,29 +88,29 @@ class PizzaCounterGeneralProvider extends StatelessWidget {
           create: (context) {
             final options = BaseOptions(
               baseUrl:
-                  'https://desafio-mobile.nyc3.digitaloceanspaces.com/movies',
+                  '',
             );
-
             return TeleviDio(options);
           },
         ),
       ];
 
   List<SingleChildWidget> _buildRepositoryProviders() => [
-      ];
+    ProxyProvider<PizzaCounterCDS, PizzaCounterDataRepository>(
+      update: (context, pizzaCounterCDS, _) => PizzaCounterRepository(
+        pizzaCounterCDS: pizzaCounterCDS,
+      ),
+    ),
+  ];
 
   List<SingleChildWidget> _buildUseCaseProviders() => [
-        Provider<ValidateFullNameUC>(
-          create: (_) => ValidateFullNameUC(),
-        ),
-        Provider<ValidateEmailUC>(
-          create: (_) => ValidateEmailUC(),
-        ),
-        Provider<ValidatePasswordUC>(
-          create: (_) => ValidatePasswordUC(),
-        ),
-        Provider<ValidatePasswordConfirmationUC>(
-          create: (_) => ValidatePasswordConfirmationUC(),
+    ProxyProvider<PizzaCounterDataRepository, GetPlayersListUC>(
+      update: (context, pizzaCounterDataRepository, _) => GetPlayersListUC(
+        pizzaCounterRepository: pizzaCounterDataRepository,
+      ),
+    ),
+        Provider<ValidateEmptyTextUC>(
+          create: (_) => ValidateEmptyTextUC(),
         ),
       ];
 }

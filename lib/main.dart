@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pizza_counter/data/cache/model/player_cm.dart';
 import 'package:provider/provider.dart';
 import 'package:pizza_counter/presentation/common/adaptive_app.dart';
 import 'package:pizza_counter/presentation/common/pizza_counter_general_provider.dart';
@@ -21,7 +22,11 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  Hive.init((await getApplicationDocumentsDirectory()).path);
+  Hive
+    ..init((await getApplicationDocumentsDirectory()).path)
+    ..registerAdapter(
+      PlayerCMAdapter(),
+    );
 
   runApp(MainWidget());
 }
@@ -35,21 +40,21 @@ class MainWidget extends StatefulWidget {
 class MainWidgetState extends State<MainWidget> {
   @override
   Widget build(BuildContext context) => PizzaCounterGeneralProvider(
-    child: AdaptiveApp(
-      localizationsDelegates: [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: S.delegate.supportedLocales,
-      primaryColor: Colors.blue,
+        child: AdaptiveApp(
+          localizationsDelegates: [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          primaryColor: Colors.red,
 
-      //Precisamos usar o onGenerateTitle para ter certeza que teremos um
-      //context com o Locale já pronto para uso
-      onGenerateTitle: (context) => S.of(context).appName,
-    ),
-  );
+          //Precisamos usar o onGenerateTitle para ter certeza que teremos um
+          //context com o Locale já pronto para uso
+          onGenerateTitle: (context) => S.of(context).appName,
+        ),
+      );
 
   @override
   void dispose() {

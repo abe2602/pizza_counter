@@ -10,5 +10,10 @@
   "passwordLabel": "Senha",
   "passwordConfirmationLabel": "Confirmação de Senha",
   "pizzaCounterTabLabel": "Contador",
-  "pizzaGraphsTabLabel": "Gráficos"
+  "pizzaChartsTabLabel": "Gráficos",
+  "cancelLabel": "Cancelar",
+  "addLabel": "Adicionar",
+  "addPlayerLabel": "Adicione um competidor!",
+  "noPlayersEmptyStatePrimaryText": "Não há competidores no momento :(.",
+  "noPlayersEmptyStateSecondaryText": "Adicione alguém e comece a competir!"
 }

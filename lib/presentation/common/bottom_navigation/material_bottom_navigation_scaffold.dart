@@ -110,7 +110,7 @@ class _MaterialBottomNavigationScaffoldState
               .toList(),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: PizzaCounterColors.lightBrown,
+          selectedItemColor: PizzaCounterColors.sauceRed,
           unselectedItemColor: PizzaCounterColors.mediumGray,
           currentIndex: widget.selectedIndex,
           items: materialNavigationBarItems

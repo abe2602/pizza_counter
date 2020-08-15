@@ -30,6 +30,7 @@ dependencies:
   cached_network_image: ^2.0.0-rc.1
   fluro: ^1.6.3
   dio: ^3.0.9
+  rflutter_alert: ^1.0.2
   domain:
     path: domain
 

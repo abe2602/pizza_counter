@@ -3,18 +3,18 @@
   "packages": [
     {
       "name": "meta",
-      "rootUri": "file:///C:/Users/Abe/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/meta-1.1.8",
+      "rootUri": "file:///D:/Programs/flutter/.pub-cache/hosted/pub.dartlang.org/meta-1.1.8",
       "packageUri": "lib/",
       "languageVersion": "1.12"
     },
     {
-      "name": "domain3",
+      "name": "domain",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "2.6"
     }
   ],
-  "generated": "2020-04-22T13:21:58.739790Z",
+  "generated": "2020-08-17T22:48:15.022216Z",
   "generator": "pub",
-  "generatorVersion": "2.8.0-dev.0.0.flutter-28c335d5a2"
+  "generatorVersion": "2.10.0-4.0.dev.flutter-0341576448"
 }

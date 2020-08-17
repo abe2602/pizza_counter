@@ -3,9 +3,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pizza_counter/data/cache/model/player_cm.dart';
-import 'package:provider/provider.dart';
 import 'package:pizza_counter/presentation/common/adaptive_app.dart';
 import 'package:pizza_counter/presentation/common/pizza_counter_general_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'generated/l10n.dart';
 

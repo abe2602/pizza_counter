@@ -5,7 +5,7 @@ import 'package:domain/use_case/validate_empty_text_uc.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart' hide Router;
 import 'package:pizza_counter/data/cache/pizza_counter_cds.dart';
-import 'package:pizza_counter/data/remote/televi_dio.dart';
+import 'package:pizza_counter/data/remote/pizza_counter_dio.dart';
 import 'package:pizza_counter/data/repository/pizza_counter_repository.dart';
 import 'package:pizza_counter/presentation/common/bottom_navigation/navigation_utils.dart';
 import 'package:pizza_counter/presentation/common/route_name_builder.dart';
@@ -89,7 +89,7 @@ class PizzaCounterGeneralProvider extends StatelessWidget {
             final options = BaseOptions(
               baseUrl: '',
             );
-            return TeleviDio(options);
+            return PizzaCounterDio(options);
           },
         ),
       ];

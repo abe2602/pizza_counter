@@ -1,16 +1,16 @@
-abstract class TeleviException implements Exception {}
+abstract class PizzaCounterException implements Exception {}
 
-class NoInternetException implements TeleviException {}
+class NoInternetException implements PizzaCounterException {}
 
-class GenericException implements TeleviException {}
+class GenericException implements PizzaCounterException {}
 
-class EmptyCachedListException implements TeleviException {}
+class EmptyCachedListException implements PizzaCounterException {}
 
-class CachedMovieDetailNotFoundException implements TeleviException {}
+class CachedMovieDetailNotFoundException implements PizzaCounterException {}
 
-class UnexpectedException implements TeleviException {}
+class UnexpectedException implements PizzaCounterException {}
 
-abstract class FormFieldException implements TeleviException {}
+abstract class FormFieldException implements PizzaCounterException {}
 
 class EmptyFormFieldException implements FormFieldException {}
 

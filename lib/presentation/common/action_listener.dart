@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:pizza_counter/presentation/common/subscription_utils.dart';
 
-class TeleviActionListener<T> extends StatefulWidget {
-  const TeleviActionListener({
+class PizzaCounterActionListener<T> extends StatefulWidget {
+  const PizzaCounterActionListener({
     @required this.child,
     @required this.actionStream,
     @required this.onReceived,
@@ -17,11 +17,12 @@ class TeleviActionListener<T> extends StatefulWidget {
   final Function(T action) onReceived;
 
   @override
-  _TeleviActionListenerState<T> createState() => _TeleviActionListenerState<T>();
+  _PizzaCounterActionListenerState<T> createState() =>
+      _PizzaCounterActionListenerState<T>();
 }
 
-class _TeleviActionListenerState<T> extends State<TeleviActionListener<T>>
-    with SubscriptionBag {
+class _PizzaCounterActionListenerState<T>
+    extends State<PizzaCounterActionListener<T>> with SubscriptionBag {
   @override
   void initState() {
     widget.actionStream

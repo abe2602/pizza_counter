@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pizza_counter/generated/l10n.dart';
+import 'package:pizza_counter/presentation/common/action_listener.dart';
 import 'package:pizza_counter/presentation/common/async_snapshot_response_view.dart';
 import 'package:pizza_counter/presentation/common/form_text_field.dart';
 import 'package:pizza_counter/presentation/common/input_status_vm.dart';
@@ -41,7 +42,6 @@ class PizzaCounterPage extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
         body: SafeArea(
           child: Container(
-            //color: Color(0xFFFFF9C4),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: SingleChildScrollView(
@@ -130,6 +130,7 @@ class NoPlayersEmptyState extends StatelessWidget {
   const NoPlayersEmptyState({
     @required this.bloc,
   }) : assert(bloc != null);
+
   final PizzaCounterBloc bloc;
 
   @override
@@ -153,11 +154,8 @@ class NoPlayersEmptyState extends StatelessWidget {
                     onChangedSink: bloc.onNameValueChangedSink,
                     statusStream: bloc.nameInputStatusStream,
                     textFieldLostFocusSink: bloc.onNameFocusLostSink,
-                    onAddFunction: () {
-                      bloc.onAddPlayerSink.add(null);
-                    },
-                    inputStatus: bloc.playerNameInputStatusValue,
-                    bloc: bloc,
+                    onAddPlayerSink: bloc.onAddPlayerSink,
+                    onActionStream: bloc.onActionEvent,
                   ),
                 );
               },
@@ -181,19 +179,17 @@ class PizzaCounterDialog extends StatefulWidget {
     @required this.onChangedSink,
     @required this.textFieldLostFocusSink,
     @required this.statusStream,
-    @required this.onAddFunction,
-    @required this.inputStatus,
-    @required this.bloc,
+    @required this.onActionStream,
+    @required this.onAddPlayerSink,
   })  : assert(onChangedSink != null),
         assert(textFieldLostFocusSink != null),
         assert(statusStream != null);
 
   final Sink<String> onChangedSink;
   final Sink<void> textFieldLostFocusSink;
+  final Sink<void> onAddPlayerSink;
   final Stream<InputStatusVM> statusStream;
-  final Function onAddFunction;
-  final InputStatusVM inputStatus;
-  final PizzaCounterBloc bloc;
+  final Stream<InputStatusVM> onActionStream;
 
   @override
   State<StatefulWidget> createState() => PizzaCounterDialogState();
@@ -201,6 +197,7 @@ class PizzaCounterDialog extends StatefulWidget {
 
 class PizzaCounterDialogState extends State<PizzaCounterDialog> {
   final _nameFocusNode = FocusNode();
+  bool aux = false;
 
   @override
   void didChangeDependencies() {
@@ -211,55 +208,68 @@ class PizzaCounterDialogState extends State<PizzaCounterDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
-        title: Column(
-          children: [
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                S.of(context).addPlayerLabel,
-                style: const TextStyle(color: Colors.black87),
-              ),
-            ),
-            FormTextField(
-              statusStream: widget.statusStream,
-              focusNode: _nameFocusNode,
-              labelText: S.of(context).nameLabel,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.done,
-              onEditingComplete: (){
-                widget.onAddFunction();
-                Navigator.of(context).pop();
-              },
-              onChanged: widget.onChangedSink.add,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    S.of(context).cancelLabel,
-                    style: TextStyle(color: PizzaCounterColors.lightRed),
-                  ),
+  Widget build(BuildContext context) =>
+      PizzaCounterActionListener<InputStatusVM>(
+        actionStream: widget.onActionStream,
+        onReceived: (event) {
+        //  if(aux) {
+          widget.onAddPlayerSink.add(null);
+            Navigator.of(context).pop();
+            aux = false;
+      //    }
+
+        },
+        child: AlertDialog(
+          title: Column(
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  S.of(context).addPlayerLabel,
+                  style: const TextStyle(color: Colors.black87),
                 ),
-                Expanded(
-                  child: FlatButton(
-                    color: PizzaCounterColors.lightRed,
+              ),
+              FormTextField(
+                statusStream: widget.statusStream,
+                focusNode: _nameFocusNode,
+                labelText: S.of(context).nameLabel,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.done,
+                onEditingComplete: () {
+                  widget.onAddPlayerSink.add(null);
+                //  Navigator.of(context).pop();
+                },
+                onChanged: widget.onChangedSink.add,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  FlatButton(
                     onPressed: () {
-                      widget.onAddFunction();
+                      Navigator.pop(context);
                     },
                     child: Text(
-                      S.of(context).addLabel,
-                      style: const TextStyle(color: Colors.black87),
+                      S.of(context).cancelLabel,
+                      style: TextStyle(color: PizzaCounterColors.lightRed),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  Expanded(
+                    child: FlatButton(
+                      color: PizzaCounterColors.lightRed,
+                      onPressed: () {
+                        widget.onAddPlayerSink.add(null);
+                        aux = true;
+                      },
+                      child: Text(
+                        S.of(context).addLabel,
+                        style: const TextStyle(color: Colors.black87),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
 }

@@ -44,16 +44,19 @@ class PizzaCounterBloc with SubscriptionBag {
   final GetPlayersListUC getPlayersListUC;
   final ValidateEmptyTextUC validateEmptyTextUC;
   final _onNameValueChangedSubject = BehaviorSubject<String>();
+  final _onNewStateSubject = BehaviorSubject<PizzaCounterResponseState>();
+  final _nameInputStatusSubject = PublishSubject<InputStatusVM>();
   final _onNameFocusLostSubject = PublishSubject<void>();
   final _onAddPlayerSubject = PublishSubject<PizzaCounterResponseState>();
-  final _nameInputStatusSubject = BehaviorSubject<InputStatusVM>();
-  final _onNewStateSubject = BehaviorSubject<PizzaCounterResponseState>();
+  final _onNewActionSubject = PublishSubject<InputStatusVM>();
   final _onTryAgainSubject = StreamController<void>();
 
   Stream<PizzaCounterResponseState> get onNewState => _onNewStateSubject;
 
   Stream<InputStatusVM> get nameInputStatusStream =>
       _nameInputStatusSubject.stream;
+
+  Stream<InputStatusVM> get onActionEvent => _onNewActionSubject.stream.take(1);
 
   Sink<void> get onTryAgain => _onTryAgainSubject.sink;
 
@@ -63,13 +66,11 @@ class PizzaCounterBloc with SubscriptionBag {
 
   Sink<void> get onNameFocusLostSink => _onNameFocusLostSubject.sink;
 
+  Sink<void> get onNewActionSink => _onNewActionSubject.sink;
+
   String get nameValue => _onNameValueChangedSubject.stream.value;
 
-  InputStatusVM get playerNameInputStatusValue =>
-      _nameInputStatusSubject.stream.value;
-
   Stream<PizzaCounterResponseState> _getPlayers() async* {
-    _nameInputStatusSubject.add(null);
     yield Loading();
 
     try {
@@ -84,7 +85,6 @@ class PizzaCounterBloc with SubscriptionBag {
 
   Stream<PizzaCounterResponseState> _addPlayer() async* {
     yield Loading();
-
   }
 
   Future<void> _buildPlayerNameValidationStream(Sink<InputStatusVM> sink) =>
@@ -92,9 +92,10 @@ class PizzaCounterBloc with SubscriptionBag {
           .getFuture(
             params: ValidateEmptyTextUCParams(nameValue),
           )
-          .addStatusToSink(sink);
+          .addStatusToSink(sink, onNewActionSink);
 
   void dispose() {
+    _onNewActionSubject.close();
     _onAddPlayerSubject.close();
     _nameInputStatusSubject.close();
     _onNameFocusLostSubject.close();

@@ -9,7 +9,7 @@ abstract class UseCase<Params, Response> {
   Future<Response> getFuture({Params params}) =>
       getRawFuture(params: params).catchError(
         (error) {
-          if (error is! TeleviException) {
+          if (error is! PizzaCounterException) {
             throw UnexpectedException();
           } else {
             throw error;

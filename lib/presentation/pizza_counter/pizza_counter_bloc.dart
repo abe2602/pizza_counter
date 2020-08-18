@@ -28,12 +28,14 @@ class PizzaCounterBloc with SubscriptionBag {
         .addTo(subscriptionsBag);
 
     _onAddPlayerSubject.stream
-        .flatMap((_) => Future.wait(
-              [
-                _buildPlayerNameValidationStream(_nameInputStatusSubject),
-              ],
-              eagerError: false,
-            ).asStream())
+        .flatMap(
+          (_) => Future.wait(
+            [
+              _buildPlayerNameValidationStream(_nameInputStatusSubject),
+            ],
+            eagerError: false,
+          ).asStream(),
+        )
         .flatMap(
           (_) => _addPlayer(),
         )

@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pizza_counter/generated/l10n.dart';
-import 'package:pizza_counter/presentation/common/action_listener.dart';
 import 'package:pizza_counter/presentation/common/async_snapshot_response_view.dart';
 import 'package:pizza_counter/presentation/common/form_text_field.dart';
 import 'package:pizza_counter/presentation/common/input_status_vm.dart';
+import 'package:pizza_counter/presentation/common/pizza_counter_action_listener.dart';
 import 'package:pizza_counter/presentation/common/pizza_counter_colors.dart';
 import 'package:pizza_counter/presentation/pizza_counter/pizza_counter_bloc.dart';
 import 'package:pizza_counter/presentation/pizza_counter/pizza_counter_models.dart';
@@ -197,7 +197,6 @@ class PizzaCounterDialog extends StatefulWidget {
 
 class PizzaCounterDialogState extends State<PizzaCounterDialog> {
   final _nameFocusNode = FocusNode();
-  bool aux = false;
 
   @override
   void didChangeDependencies() {
@@ -208,16 +207,11 @@ class PizzaCounterDialogState extends State<PizzaCounterDialog> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      PizzaCounterActionListener<InputStatusVM>(
+  Widget build(BuildContext context) => PizzaCounterActionListener(
         actionStream: widget.onActionStream,
         onReceived: (event) {
-        //  if(aux) {
-          widget.onAddPlayerSink.add(null);
-            Navigator.of(context).pop();
-            aux = false;
-      //    }
-
+          Navigator.of(context).pop();
+          widget.onChangedSink.add(null);
         },
         child: AlertDialog(
           title: Column(
@@ -237,7 +231,6 @@ class PizzaCounterDialogState extends State<PizzaCounterDialog> {
                 textInputAction: TextInputAction.done,
                 onEditingComplete: () {
                   widget.onAddPlayerSink.add(null);
-                //  Navigator.of(context).pop();
                 },
                 onChanged: widget.onChangedSink.add,
               ),
@@ -258,7 +251,6 @@ class PizzaCounterDialogState extends State<PizzaCounterDialog> {
                       color: PizzaCounterColors.lightRed,
                       onPressed: () {
                         widget.onAddPlayerSink.add(null);
-                        aux = true;
                       },
                       child: Text(
                         S.of(context).addLabel,

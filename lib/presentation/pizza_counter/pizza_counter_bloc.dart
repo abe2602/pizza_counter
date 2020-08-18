@@ -31,7 +31,9 @@ class PizzaCounterBloc with SubscriptionBag {
         .flatMap(
           (_) => Future.wait(
             [
-              _buildPlayerNameValidationStream(_nameInputStatusSubject),
+              _buildPlayerNameValidationStream(_nameInputStatusSubject).then(
+                (value) => onNewActionSink.add(null),
+              ),
             ],
             eagerError: false,
           ).asStream(),
@@ -72,6 +74,7 @@ class PizzaCounterBloc with SubscriptionBag {
 
   String get nameValue => _onNameValueChangedSubject.stream.value;
 
+  //todo: criar empty state
   Stream<PizzaCounterResponseState> _getPlayers() async* {
     yield Loading();
 
@@ -80,11 +83,11 @@ class PizzaCounterBloc with SubscriptionBag {
         playersList: await getPlayersListUC.getFuture(),
       );
     } catch (e) {
-      print(e.toString());
       yield Error();
     }
   }
 
+  //todo: será feito nas próximas tasks
   Stream<PizzaCounterResponseState> _addPlayer() async* {
     yield Loading();
   }
@@ -94,7 +97,7 @@ class PizzaCounterBloc with SubscriptionBag {
           .getFuture(
             params: ValidateEmptyTextUCParams(nameValue),
           )
-          .addStatusToSink(sink, onNewActionSink);
+          .addStatusToSink(sink);
 
   void dispose() {
     _onNewActionSubject.close();

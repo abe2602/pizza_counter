@@ -27,9 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           activeIcon: IconTheme(
             data: IconThemeData(color: PizzaCounterColors.sauceRed),
-            child: const Icon(Icons.local_pizza_outlined),
+            child: const Icon(Icons.local_pizza),
           ),
-          icon: const Icon(Icons.local_pizza_outlined),
+          icon: const Icon(Icons.local_pizza),
         ),
         navigatorKey: GlobalKey<NavigatorState>(),
         initialRouteName: RouteNameBuilder.pizzaCounterResource,
@@ -41,9 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           activeIcon: IconTheme(
             data: IconThemeData(color: PizzaCounterColors.sauceRed),
-            child: const Icon(Icons.graphic_eq_outlined),
+            child: const Icon(Icons.graphic_eq),
           ),
-          icon: const Icon(Icons.graphic_eq_outlined),
+          icon: const Icon(Icons.graphic_eq),
         ),
         navigatorKey: GlobalKey<NavigatorState>(),
         initialRouteName: RouteNameBuilder.pizzaGraphResource,

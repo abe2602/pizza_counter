@@ -87,6 +87,7 @@ class PizzaCounterPage extends StatelessWidget {
       );
 }
 
+//todo: será feito nas próximas tasks
 class PlayerCard extends StatelessWidget {
   const PlayerCard(
       {@required this.bloc, @required this.name, @required this.slices})
@@ -105,7 +106,7 @@ class PlayerCard extends StatelessWidget {
           elevation: 1,
           color: Colors.white,
           child: Container(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -151,11 +152,11 @@ class NoPlayersEmptyState extends StatelessWidget {
                 showDialog(
                   context: context,
                   child: PizzaCounterDialog(
-                    onChangedSink: bloc.onNameValueChangedSink,
-                    statusStream: bloc.nameInputStatusStream,
-                    textFieldLostFocusSink: bloc.onNameFocusLostSink,
-                    onAddPlayerSink: bloc.onAddPlayerSink,
-                    onActionStream: bloc.onActionEvent,
+                    onInputTextChangedSink: bloc.onNameValueChangedSink,
+                    onInputTextStatusStream: bloc.nameInputStatusStream,
+                    onInputTextLostFocusSink: bloc.onNameFocusLostSink,
+                    onActionButtonSink: bloc.onAddPlayerSink,
+                    onActionEventStream: bloc.onActionEvent,
                   ),
                 );
               },
@@ -176,20 +177,20 @@ class NoPlayersEmptyState extends StatelessWidget {
 
 class PizzaCounterDialog extends StatefulWidget {
   const PizzaCounterDialog({
-    @required this.onChangedSink,
-    @required this.textFieldLostFocusSink,
-    @required this.statusStream,
-    @required this.onActionStream,
-    @required this.onAddPlayerSink,
-  })  : assert(onChangedSink != null),
-        assert(textFieldLostFocusSink != null),
-        assert(statusStream != null);
+    @required this.onInputTextChangedSink,
+    @required this.onInputTextLostFocusSink,
+    @required this.onInputTextStatusStream,
+    @required this.onActionEventStream,
+    @required this.onActionButtonSink,
+  })  : assert(onInputTextChangedSink != null),
+        assert(onInputTextLostFocusSink != null),
+        assert(onInputTextStatusStream != null);
 
-  final Sink<String> onChangedSink;
-  final Sink<void> textFieldLostFocusSink;
-  final Sink<void> onAddPlayerSink;
-  final Stream<InputStatusVM> statusStream;
-  final Stream<InputStatusVM> onActionStream;
+  final Sink<String> onInputTextChangedSink;
+  final Sink<void> onInputTextLostFocusSink;
+  final Sink<void> onActionButtonSink;
+  final Stream<void> onActionEventStream;
+  final Stream<InputStatusVM> onInputTextStatusStream;
 
   @override
   State<StatefulWidget> createState() => PizzaCounterDialogState();
@@ -201,17 +202,17 @@ class PizzaCounterDialogState extends State<PizzaCounterDialog> {
   @override
   void didChangeDependencies() {
     _nameFocusNode
-        .addFocusLostListener(() => widget.textFieldLostFocusSink.add(null));
+        .addFocusLostListener(() => widget.onInputTextLostFocusSink.add(null));
 
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) => PizzaCounterActionListener(
-        actionStream: widget.onActionStream,
+        actionStream: widget.onActionEventStream,
         onReceived: (event) {
           Navigator.of(context).pop();
-          widget.onChangedSink.add(null);
+          widget.onInputTextChangedSink.add(null);
         },
         child: AlertDialog(
           title: Column(
@@ -224,15 +225,15 @@ class PizzaCounterDialogState extends State<PizzaCounterDialog> {
                 ),
               ),
               FormTextField(
-                statusStream: widget.statusStream,
+                statusStream: widget.onInputTextStatusStream,
                 focusNode: _nameFocusNode,
                 labelText: S.of(context).nameLabel,
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.done,
                 onEditingComplete: () {
-                  widget.onAddPlayerSink.add(null);
+                  widget.onActionButtonSink.add(null);
                 },
-                onChanged: widget.onChangedSink.add,
+                onChanged: widget.onInputTextChangedSink.add,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -250,7 +251,7 @@ class PizzaCounterDialogState extends State<PizzaCounterDialog> {
                     child: FlatButton(
                       color: PizzaCounterColors.lightRed,
                       onPressed: () {
-                        widget.onAddPlayerSink.add(null);
+                        widget.onActionButtonSink.add(null);
                       },
                       child: Text(
                         S.of(context).addLabel,

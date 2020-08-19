@@ -3,6 +3,8 @@ import 'package:domain/use_case/get_players_list_uc.dart';
 import 'package:domain/use_case/validate_empty_text_uc.dart';
 import 'package:domain/use_case/add_player_uc.dart';
 import 'package:domain/use_case/delete_player_uc.dart';
+import 'package:domain/use_case/add_slice_uc.dart';
+import 'package:domain/use_case/remove_slice_uc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -24,16 +26,24 @@ class PizzaCounterPage extends StatelessWidget {
   })  : assert(bloc != null),
         super(key: key);
 
-  static Widget create(BuildContext context) => ProxyProvider4<GetPlayersListUC,
-          ValidateEmptyTextUC, AddPlayerUC, DeletePlayerUC, PizzaCounterBloc>(
+  static Widget create(BuildContext context) => ProxyProvider6<
+          GetPlayersListUC,
+          ValidateEmptyTextUC,
+          AddPlayerUC,
+          DeletePlayerUC,
+          AddSliceUC,
+          RemoveSliceUC,
+          PizzaCounterBloc>(
         update: (context, getPlayersListUC, validateEmptyTextUC, addPlayerUC,
-                deletePlayerUC, bloc) =>
+                deletePlayerUC, addSliceUC, removeSliceUC, bloc) =>
             bloc ??
             PizzaCounterBloc(
               getPlayersListUC: getPlayersListUC,
               validateEmptyTextUC: validateEmptyTextUC,
               addPlayerUC: addPlayerUC,
               deletePlayerUC: deletePlayerUC,
+              addSliceUC: addSliceUC,
+              removeSliceUC: removeSliceUC,
             ),
         child: Consumer<PizzaCounterBloc>(
           builder: (context, bloc, _) => PizzaCounterPage(
@@ -185,7 +195,11 @@ class PlayerCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: FlatButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if(player.slices > 0) {
+                            bloc.onRemoveSliceSubject.add(player.id);
+                          }
+                        },
                         child: Text(
                           S.of(context).minus,
                           style: TextStyle(
@@ -203,7 +217,9 @@ class PlayerCard extends StatelessWidget {
                     Expanded(
                       child: FlatButton(
                         color: Colors.red,
-                        onPressed: () {},
+                        onPressed: () {
+                          bloc.onAddSliceSubject.add(player.id);
+                        },
                         child: Text(
                           S.of(context).plus,
                           style: TextStyle(

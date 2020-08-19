@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:domain/data_repository/pizza_counter_data_repository.dart';
 import 'package:domain/use_case/get_players_list_uc.dart';
 import 'package:domain/use_case/add_player_uc.dart';
+import 'package:domain/use_case/add_slice_uc.dart';
+import 'package:domain/use_case/remove_slice_uc.dart';
 import 'package:domain/use_case/delete_player_uc.dart';
 import 'package:domain/use_case/validate_empty_text_uc.dart';
 import 'package:fluro/fluro.dart';
@@ -107,6 +109,16 @@ class PizzaCounterGeneralProvider extends StatelessWidget {
   List<SingleChildWidget> _buildUseCaseProviders() => [
         ProxyProvider<PizzaCounterDataRepository, GetPlayersListUC>(
           update: (context, pizzaCounterDataRepository, _) => GetPlayersListUC(
+            pizzaCounterRepository: pizzaCounterDataRepository,
+          ),
+        ),
+        ProxyProvider<PizzaCounterDataRepository, AddSliceUC>(
+          update: (context, pizzaCounterDataRepository, _) => AddSliceUC(
+            pizzaCounterRepository: pizzaCounterDataRepository,
+          ),
+        ),
+        ProxyProvider<PizzaCounterDataRepository, RemoveSliceUC>(
+          update: (context, pizzaCounterDataRepository, _) => RemoveSliceUC(
             pizzaCounterRepository: pizzaCounterDataRepository,
           ),
         ),

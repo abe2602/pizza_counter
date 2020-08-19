@@ -15,6 +15,9 @@ class PizzaCounterCDS {
         if (playersList == null) {
           throw EmptyCachedListException();
         } else {
+          playersList.sort(
+            (p1, p2) => p1.name.compareTo(p2.name),
+          );
           return playersList;
         }
       });
@@ -35,19 +38,67 @@ class PizzaCounterCDS {
 
   Future<void> deletePlayer(String playerId) => _openPlayersListBox().then(
         (box) {
-      final List<PlayerCM> playersList =
-      box.get(_playersBoxKey)?.cast<PlayerCM>();
+          final List<PlayerCM> playersList =
+              box.get(_playersBoxKey)?.cast<PlayerCM>();
 
-      if (playersList == null) {
-        return EmptyCachedListException();
-      } else {
-        playersList.removeWhere((player) => player.id == playerId);
-        return box.put(_playersBoxKey, playersList);
-      }
-    },
-  );
+          if (playersList == null) {
+            return EmptyCachedListException();
+          } else {
+            playersList.removeWhere((player) => player.id == playerId);
+            return box.put(_playersBoxKey, playersList);
+          }
+        },
+      );
 
-  Future<void> addSlice(String playerId) => null;
+  Future<void> addSlice(String playerId) => _openPlayersListBox().then(
+        (box) {
+          final List<PlayerCM> playersList =
+          box.get(_playersBoxKey)?.cast<PlayerCM>();
 
-  Future<void> removeSlice(String playerId) => null;
+          if (playersList == null) {
+            return EmptyCachedListException();
+          } else {
+            final p = playersList
+                .where((player) => player.id == playerId)
+                .map(
+                  (player) => player,
+            )
+                .toList()[0];
+
+            playersList
+              ..remove(p)
+              ..add(
+                PlayerCM(id: p.id, slices: p.slices + 1, name: p.name),
+              );
+
+            return box.put(_playersBoxKey, playersList);
+          }
+        },
+      );
+
+  Future<void> removeSlice(String playerId) => _openPlayersListBox().then(
+        (box) {
+          final List<PlayerCM> playersList =
+              box.get(_playersBoxKey)?.cast<PlayerCM>();
+
+          if (playersList == null) {
+            return EmptyCachedListException();
+          } else {
+            final p = playersList
+                .where((player) => player.id == playerId)
+                .map(
+                  (player) => player,
+                )
+                .toList()[0];
+
+            playersList
+              ..remove(p)
+              ..add(
+                PlayerCM(id: p.id, slices: p.slices - 1, name: p.name),
+              );
+
+            return box.put(_playersBoxKey, playersList);
+          }
+        },
+      );
 }

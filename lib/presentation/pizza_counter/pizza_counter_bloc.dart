@@ -5,6 +5,8 @@ import 'package:domain/use_case/get_players_list_uc.dart';
 import 'package:domain/use_case/validate_empty_text_uc.dart';
 import 'package:domain/use_case/add_player_uc.dart';
 import 'package:domain/use_case/delete_player_uc.dart';
+import 'package:domain/use_case/add_slice_uc.dart';
+import 'package:domain/use_case/remove_slice_uc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pizza_counter/presentation/common/input_status_vm.dart';
 import 'package:pizza_counter/presentation/common/view_utils.dart';
@@ -18,6 +20,8 @@ class PizzaCounterBloc with SubscriptionBag {
     @required this.getPlayersListUC,
     @required this.addPlayerUC,
     @required this.deletePlayerUC,
+    @required this.removeSliceUC,
+    @required this.addSliceUC,
     @required this.validateEmptyTextUC,
   })  : assert(getPlayersListUC != null),
         assert(validateEmptyTextUC != null),
@@ -54,12 +58,28 @@ class PizzaCounterBloc with SubscriptionBag {
 
     _onDeletePlayerSubject.stream
         .flatMap(
-          _deletePlayer,
-        )
+      _deletePlayer,
+    )
+        .listen(_onNewStateSubject.add)
+        .addTo(subscriptionsBag);
+
+    _onAddSliceSubject.stream
+        .flatMap(
+      _addSlice,
+    )
+        .listen(_onNewStateSubject.add)
+        .addTo(subscriptionsBag);
+
+    _onRemoveSliceSubject.stream
+        .flatMap(
+      _removeSlice,
+    )
         .listen(_onNewStateSubject.add)
         .addTo(subscriptionsBag);
   }
 
+  final RemoveSliceUC removeSliceUC;
+  final AddSliceUC addSliceUC;
   final DeletePlayerUC deletePlayerUC;
   final AddPlayerUC addPlayerUC;
   final GetPlayersListUC getPlayersListUC;
@@ -72,6 +92,8 @@ class PizzaCounterBloc with SubscriptionBag {
   final _onNewActionSubject = PublishSubject<InputStatusVM>();
   final _onDeletePlayerSubject = PublishSubject<String>();
   final _onTryAgainSubject = StreamController<void>();
+  final _onAddSliceSubject = PublishSubject<String>();
+  final _onRemoveSliceSubject = PublishSubject<String>();
 
   int _listSize = 0;
 
@@ -89,6 +111,10 @@ class PizzaCounterBloc with SubscriptionBag {
   Sink<String> get onNameValueChangedSink => _onNameValueChangedSubject.sink;
 
   Sink<String> get onDeletePlayerSubject => _onDeletePlayerSubject.sink;
+
+  Sink<String> get onAddSliceSubject => _onAddSliceSubject.sink;
+
+  Sink<String> get onRemoveSliceSubject => _onRemoveSliceSubject.sink;
 
   Sink<void> get onNameFocusLostSink => _onNameFocusLostSubject.sink;
 
@@ -161,6 +187,45 @@ class PizzaCounterBloc with SubscriptionBag {
     }
   }
 
+  Stream<PizzaCounterResponseState> _addSlice(String playerId) async* {
+
+    try {
+      await addSliceUC.getFuture(
+        params: AddSliceUCParams(
+          playerId: playerId,
+        ),
+      );
+
+      final playersList = await getPlayersListUC.getFuture();
+      _listSize = playersList.length;
+
+      yield Success(
+        playersList: playersList,
+      );
+    } catch (e) {
+      yield Error();
+    }
+  }
+
+  Stream<PizzaCounterResponseState> _removeSlice(String playerId) async* {
+    try {
+      await removeSliceUC.getFuture(
+        params: RemoveSliceUCParams(
+          playerId: playerId,
+        ),
+      );
+
+      final playersList = await getPlayersListUC.getFuture();
+      _listSize = playersList.length;
+
+      yield Success(
+        playersList: playersList,
+      );
+    } catch (e) {
+      yield Error();
+    }
+  }
+
   Future<void> _buildPlayerNameValidationStream(Sink<InputStatusVM> sink) =>
       validateEmptyTextUC
           .getFuture(
@@ -169,6 +234,8 @@ class PizzaCounterBloc with SubscriptionBag {
           .addStatusToSink(sink);
 
   void dispose() {
+    _onRemoveSliceSubject.close();
+    _onAddSliceSubject.close();
     _onDeletePlayerSubject.close();
     _onNewActionSubject.close();
     _onAddPlayerSubject.close();

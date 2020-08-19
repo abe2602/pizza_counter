@@ -3,6 +3,7 @@ import 'package:domain/exceptions.dart';
 import 'package:domain/model/player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pizza_counter/data/cache/pizza_counter_cds.dart';
+import 'package:pizza_counter/data/cache/mappers/domain_to_cache.dart';
 import 'package:pizza_counter/data/cache/mappers/cache_to_domain.dart';
 
 class PizzaCounterRepository implements PizzaCounterDataRepository {
@@ -14,13 +15,13 @@ class PizzaCounterRepository implements PizzaCounterDataRepository {
 
   @override
   Future<List<Player>> getPlayersList() => pizzaCounterCDS
-      .getPlayersList()
-      .then(
-        (playerList) => playerList.toDM(),
-      )
-      .catchError(
+          .getPlayersList()
+          .then(
+            (playerList) => playerList.toDM(),
+          )
+          .catchError(
         (error) {
-          if(error is EmptyCachedListException) {
+          if (error is EmptyCachedListException) {
             return <Player>[];
           } else {
             throw error;
@@ -34,4 +35,9 @@ class PizzaCounterRepository implements PizzaCounterDataRepository {
   @override
   Future<void> removeSlice(int playerId) =>
       pizzaCounterCDS.removeSlice(playerId);
+
+  @override
+  Future<void> addPlayer(Player player) => pizzaCounterCDS.addPlayer(
+        player.toCM(),
+      );
 }

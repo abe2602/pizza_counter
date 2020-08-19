@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:domain/model/player.dart';
 import 'package:domain/use_case/get_players_list_uc.dart';
 import 'package:domain/use_case/validate_empty_text_uc.dart';
+import 'package:domain/use_case/add_player_uc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pizza_counter/presentation/common/input_status_vm.dart';
 import 'package:pizza_counter/presentation/common/view_utils.dart';
@@ -12,9 +14,11 @@ import 'package:rxdart/rxdart.dart';
 class PizzaCounterBloc with SubscriptionBag {
   PizzaCounterBloc({
     @required this.getPlayersListUC,
+    @required this.addPlayerUC,
     @required this.validateEmptyTextUC,
   })  : assert(getPlayersListUC != null),
-        assert(validateEmptyTextUC != null) {
+        assert(validateEmptyTextUC != null),
+        assert(addPlayerUC != null) {
     MergeStream(
       [
         _getPlayers(),
@@ -22,6 +26,7 @@ class PizzaCounterBloc with SubscriptionBag {
     ).listen(_onNewStateSubject.add).addTo(subscriptionsBag);
 
     _onNameFocusLostSubject
+        .take(1)
         .listen(
           (_) => _buildPlayerNameValidationStream(_nameInputStatusSubject),
         )
@@ -41,10 +46,11 @@ class PizzaCounterBloc with SubscriptionBag {
         .flatMap(
           (_) => _addPlayer(),
         )
-        .listen((_) {})
+        .listen(_onNewStateSubject.add)
         .addTo(subscriptionsBag);
   }
 
+  final AddPlayerUC addPlayerUC;
   final GetPlayersListUC getPlayersListUC;
   final ValidateEmptyTextUC validateEmptyTextUC;
   final _onNameValueChangedSubject = BehaviorSubject<String>();
@@ -54,6 +60,7 @@ class PizzaCounterBloc with SubscriptionBag {
   final _onAddPlayerSubject = PublishSubject<PizzaCounterResponseState>();
   final _onNewActionSubject = PublishSubject<InputStatusVM>();
   final _onTryAgainSubject = StreamController<void>();
+  int _listSize = 0;
 
   Stream<PizzaCounterResponseState> get onNewState => _onNewStateSubject;
 
@@ -79,17 +86,41 @@ class PizzaCounterBloc with SubscriptionBag {
     yield Loading();
 
     try {
+      final playersList = await getPlayersListUC.getFuture();
+      _listSize = playersList.length;
+
       yield Success(
-        playersList: await getPlayersListUC.getFuture(),
+        playersList: playersList,
       );
     } catch (e) {
       yield Error();
     }
   }
 
-  //todo: será feito nas próximas tasks
   Stream<PizzaCounterResponseState> _addPlayer() async* {
-    yield Loading();
+    if (_listSize == 0) {
+      yield Loading();
+    }
+
+    try {
+      await addPlayerUC.getFuture(
+        params: AddPlayerUCParams(
+          player: Player(id: _listSize, name: nameValue, slices: 0),
+        ),
+      );
+
+      final playersList = await getPlayersListUC.getFuture();
+      _listSize = playersList.length;
+
+      //Every time a player is added i MUST clean the stream sink
+      onNameValueChangedSink.add('');
+
+      yield Success(
+        playersList: playersList,
+      );
+    } catch (e) {
+      yield Error();
+    }
   }
 
   Future<void> _buildPlayerNameValidationStream(Sink<InputStatusVM> sink) =>

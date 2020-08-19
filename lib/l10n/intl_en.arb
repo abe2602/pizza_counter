@@ -19,5 +19,7 @@
   "finishRound": "FINISH ROUND!",
   "plus": "+",
   "minus": "-",
-  "appTitle": "App's name"
+  "appTitle": "App's name",
+  "deletePlayerConfirmationLabel": "Do you really want to delete this player?",
+  "deleteLabel": "Delete"
 }

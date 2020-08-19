@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:domain/data_repository/pizza_counter_data_repository.dart';
 import 'package:domain/use_case/get_players_list_uc.dart';
 import 'package:domain/use_case/add_player_uc.dart';
+import 'package:domain/use_case/delete_player_uc.dart';
 import 'package:domain/use_case/validate_empty_text_uc.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart' hide Router;
@@ -111,6 +112,11 @@ class PizzaCounterGeneralProvider extends StatelessWidget {
         ),
         ProxyProvider<PizzaCounterDataRepository, AddPlayerUC>(
           update: (context, pizzaCounterDataRepository, _) => AddPlayerUC(
+            pizzaCounterRepository: pizzaCounterDataRepository,
+          ),
+        ),
+        ProxyProvider<PizzaCounterDataRepository, DeletePlayerUC>(
+          update: (context, pizzaCounterDataRepository, _) => DeletePlayerUC(
             pizzaCounterRepository: pizzaCounterDataRepository,
           ),
         ),

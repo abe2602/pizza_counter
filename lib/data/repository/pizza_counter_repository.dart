@@ -14,13 +14,14 @@ class PizzaCounterRepository implements PizzaCounterDataRepository {
   final PizzaCounterCDS pizzaCounterCDS;
 
   @override
-  Future<List<Player>> getPlayersList() => pizzaCounterCDS
+  Future<List<Player>> getPlayersList() =>
+      pizzaCounterCDS
           .getPlayersList()
           .then(
             (playerList) => playerList.toDM(),
-          )
+      )
           .catchError(
-        (error) {
+            (error) {
           if (error is EmptyCachedListException) {
             return <Player>[];
           } else {
@@ -30,14 +31,19 @@ class PizzaCounterRepository implements PizzaCounterDataRepository {
       );
 
   @override
-  Future<void> addSlice(int playerId) => pizzaCounterCDS.addSlice(playerId);
+  Future<void> addSlice(String playerId) => pizzaCounterCDS.addSlice(playerId);
 
   @override
-  Future<void> removeSlice(int playerId) =>
+  Future<void> removeSlice(String playerId) =>
       pizzaCounterCDS.removeSlice(playerId);
 
   @override
-  Future<void> addPlayer(Player player) => pizzaCounterCDS.addPlayer(
+  Future<void> addPlayer(Player player) =>
+      pizzaCounterCDS.addPlayer(
         player.toCM(),
       );
+
+  @override
+  Future<void> deletePlayer(String playerId) =>
+      pizzaCounterCDS.deletePlayer(playerId);
 }

@@ -33,7 +33,21 @@ class PizzaCounterCDS {
         },
       );
 
-  Future<void> addSlice(int playerId) => null;
+  Future<void> deletePlayer(String playerId) => _openPlayersListBox().then(
+        (box) {
+      final List<PlayerCM> playersList =
+      box.get(_playersBoxKey)?.cast<PlayerCM>();
 
-  Future<void> removeSlice(int playerId) => null;
+      if (playersList == null) {
+        return EmptyCachedListException();
+      } else {
+        playersList.removeWhere((player) => player.id == playerId);
+        return box.put(_playersBoxKey, playersList);
+      }
+    },
+  );
+
+  Future<void> addSlice(String playerId) => null;
+
+  Future<void> removeSlice(String playerId) => null;
 }

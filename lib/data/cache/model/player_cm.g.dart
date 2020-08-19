@@ -17,7 +17,7 @@ class PlayerCMAdapter extends TypeAdapter<PlayerCM> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PlayerCM(
-      id: fields[0] as int,
+      id: fields[0] as String,
       slices: fields[1] as int,
       name: fields[2] as String,
     );

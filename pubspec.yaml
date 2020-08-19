@@ -14,7 +14,7 @@ description: A pizza counter app.
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.6.0-dev.1.0 <3.0.0'
+  sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -31,6 +31,7 @@ dependencies:
   fluro: ^1.6.3
   dio: ^3.0.9
   rflutter_alert: ^1.0.2
+  uuid: ^2.2.0
   domain:
     path: domain
 
@@ -41,6 +42,8 @@ dev_dependencies:
   json_serializable: ^3.2.3
   hive_generator: ^0.7.0
 
+dependency_overrides:
+  analyzer: '0.39.14'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

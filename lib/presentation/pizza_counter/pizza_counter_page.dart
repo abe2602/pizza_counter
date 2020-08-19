@@ -1,6 +1,8 @@
+import 'package:domain/model/player.dart';
 import 'package:domain/use_case/get_players_list_uc.dart';
 import 'package:domain/use_case/validate_empty_text_uc.dart';
 import 'package:domain/use_case/add_player_uc.dart';
+import 'package:domain/use_case/delete_player_uc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -22,15 +24,16 @@ class PizzaCounterPage extends StatelessWidget {
   })  : assert(bloc != null),
         super(key: key);
 
-  static Widget create(BuildContext context) => ProxyProvider3<GetPlayersListUC,
-          ValidateEmptyTextUC, AddPlayerUC, PizzaCounterBloc>(
+  static Widget create(BuildContext context) => ProxyProvider4<GetPlayersListUC,
+          ValidateEmptyTextUC, AddPlayerUC, DeletePlayerUC, PizzaCounterBloc>(
         update: (context, getPlayersListUC, validateEmptyTextUC, addPlayerUC,
-                bloc) =>
+                deletePlayerUC, bloc) =>
             bloc ??
             PizzaCounterBloc(
               getPlayersListUC: getPlayersListUC,
               validateEmptyTextUC: validateEmptyTextUC,
               addPlayerUC: addPlayerUC,
+              deletePlayerUC: deletePlayerUC,
             ),
         child: Consumer<PizzaCounterBloc>(
           builder: (context, bloc, _) => PizzaCounterPage(
@@ -94,8 +97,7 @@ class PizzaCounterPage extends StatelessWidget {
                             children: List.generate(
                               successState.playersList.length,
                               (index) => PlayerCard(
-                                name: successState.playersList[index].name,
-                                slices: successState.playersList[index].slices,
+                                player: successState.playersList[index],
                                 bloc: bloc,
                               ),
                             ),
@@ -114,7 +116,7 @@ class PizzaCounterPage extends StatelessWidget {
                               onPressed: () {},
                               child: Text(
                                 S.of(context).finishRound,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                 ),
                               ),
@@ -136,15 +138,14 @@ class PizzaCounterPage extends StatelessWidget {
 }
 
 class PlayerCard extends StatelessWidget {
-  const PlayerCard(
-      {@required this.bloc, @required this.name, @required this.slices})
-      : assert(bloc != null),
-        assert(name != null),
-        assert(slices != null);
+  const PlayerCard({
+    @required this.bloc,
+    @required this.player,
+  })  : assert(bloc != null),
+        assert(player != null);
 
   final PizzaCounterBloc bloc;
-  final int slices;
-  final String name;
+  final Player player;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -161,11 +162,23 @@ class PlayerCard extends StatelessWidget {
               children: [
                 Align(
                   alignment: Alignment.topRight,
-                  child: Image.asset('images/red_delete.png'),
+                  child: InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        child: DeletePlayerConfirmationDialog(
+                          primaryButtonAction: () {
+                            bloc.onDeletePlayerSubject.add(player.id);
+                          },
+                        ),
+                      );
+                    },
+                    child: Image.asset('images/red_delete.png'),
+                  ),
                 ),
-                Text(name),
+                Text(player.name),
                 Text(
-                  slices.toString(),
+                  player.slices.toString(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -230,15 +243,17 @@ class NoPlayersEmptyState extends StatelessWidget {
                 children: [
                   Text(
                     S.of(context).noPlayersEmptyStatePrimaryText,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w400,
+                      color: PizzaCounterColors.mediumGray,
                       fontSize: 16,
                     ),
                   ),
                   Text(
                     S.of(context).noPlayersEmptyStateSecondaryText,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w400,
+                      color: PizzaCounterColors.mediumGray,
                       fontSize: 16,
                     ),
                   ),
@@ -258,18 +273,76 @@ class NoPlayersEmptyState extends StatelessWidget {
                     ),
                   );
                 },
-                color: PizzaCounterColors.lightRed,
+                color: Colors.red,
                 child: Container(
                   alignment: Alignment.bottomCenter,
                   width: MediaQuery.of(context).size.width,
                   child: Text(
                     S.of(context).addPlayerLabel,
-                    style: const TextStyle(color: Colors.black87),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ),
             ],
           ),
+        ),
+      );
+}
+
+class DeletePlayerConfirmationDialog extends StatelessWidget {
+  const DeletePlayerConfirmationDialog({
+    @required this.primaryButtonAction,
+  }) : assert(primaryButtonAction != null);
+
+  final Function primaryButtonAction;
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+        title: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(bottom: 15),
+              alignment: Alignment.center,
+              child: Text(
+                S.of(context).deletePlayerConfirmationLabel,
+                style: TextStyle(
+                  color: PizzaCounterColors.mediumGray,
+                  fontSize: (MediaQuery.of(context).size.width +
+                          MediaQuery.of(context).size.height) /
+                      50,
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    S.of(context).cancelLabel,
+                    style: const TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: FlatButton(
+                    color: Colors.red,
+                    onPressed: () {
+                      primaryButtonAction();
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      S.of(context).deleteLabel,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       );
 }
@@ -319,7 +392,12 @@ class PizzaCounterDialogState extends State<PizzaCounterDialog> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   S.of(context).addPlayerLabel,
-                  style: const TextStyle(color: Colors.black87),
+                  style: TextStyle(
+                    color: PizzaCounterColors.mediumGray,
+                    fontSize: (MediaQuery.of(context).size.width +
+                            MediaQuery.of(context).size.height) /
+                        50,
+                  ),
                 ),
               ),
               FormTextField(
@@ -343,18 +421,18 @@ class PizzaCounterDialogState extends State<PizzaCounterDialog> {
                     },
                     child: Text(
                       S.of(context).cancelLabel,
-                      style: TextStyle(color: PizzaCounterColors.lightRed),
+                      style: const TextStyle(color: Colors.red),
                     ),
                   ),
                   Expanded(
                     child: FlatButton(
-                      color: PizzaCounterColors.lightRed,
+                      color: Colors.red,
                       onPressed: () {
                         widget.onActionButtonSink.add(null);
                       },
                       child: Text(
                         S.of(context).addLabel,
-                        style: const TextStyle(color: Colors.black87),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),

@@ -14,7 +14,7 @@ class PlayerCM {
         assert(name != null);
 
   @HiveField(0)
-  final int id;
+  final String id;
   @HiveField(1)
   final int slices;
   @HiveField(2)

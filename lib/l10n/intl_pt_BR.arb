@@ -19,5 +19,7 @@
   "finishRound": "FINALIZAR RODÍZIO",
   "plus": "+",
   "minus": "-",
-  "appTitle": "Nome do App"
+  "appTitle": "Nome do App",
+  "deletePlayerConfirmationLabel": "Você realmente deseja excluir o jogador?",
+  "deleteLabel": "Deletar"
 }

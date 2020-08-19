@@ -9,7 +9,7 @@ class Player {
         assert(slices != null),
         assert(name != null);
 
-  final int id;
+  final String id;
   final int slices;
   final String name;
 }

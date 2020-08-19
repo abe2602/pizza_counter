@@ -49,24 +49,24 @@ class PizzaCounterPage extends StatelessWidget {
             maxLines: 1,
           ),
           actions: [
-             InkWell(
-                onTap: (){
-                  showDialog(
-                    context: context,
-                    child: PizzaCounterDialog(
-                      onInputTextChangedSink: bloc.onNameValueChangedSink,
-                      onInputTextStatusStream: bloc.nameInputStatusStream,
-                      onInputTextLostFocusSink: bloc.onNameFocusLostSink,
-                      onActionButtonSink: bloc.onAddPlayerSink,
-                      onActionEventStream: bloc.onActionEvent,
-                    ),
-                  );
-                },
-               child: Container(
+            InkWell(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  child: PizzaCounterDialog(
+                    onInputTextChangedSink: bloc.onNameValueChangedSink,
+                    onInputTextStatusStream: bloc.nameInputStatusStream,
+                    onInputTextLostFocusSink: bloc.onNameFocusLostSink,
+                    onActionButtonSink: bloc.onAddPlayerSink,
+                    onActionEventStream: bloc.onActionEvent,
+                  ),
+                );
+              },
+              child: Container(
                 margin: const EdgeInsets.only(right: 15, left: 15),
-                child:  const Icon(Icons.person_add),
+                child: const Icon(Icons.person_add),
+              ),
             ),
-             ),
           ],
         ),
         body: SafeArea(
@@ -155,16 +155,28 @@ class NoPlayersEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
-    child: Container(
-      height: MediaQuery.of(context).size.height - 170,
+        child: Container(
+          height: MediaQuery.of(context).size.height - 170,
           margin: const EdgeInsets.all(15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Column(
                 children: [
-                  Text(S.of(context).noPlayersEmptyStatePrimaryText),
-                  Text(S.of(context).noPlayersEmptyStateSecondaryText),
+                  Text(
+                    S.of(context).noPlayersEmptyStatePrimaryText,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    S.of(context).noPlayersEmptyStateSecondaryText,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16,
+                    ),
+                  ),
                 ],
               ),
               Image.asset('images/pizza.png'),
@@ -194,7 +206,7 @@ class NoPlayersEmptyState extends StatelessWidget {
             ],
           ),
         ),
-  );
+      );
 }
 
 class PizzaCounterDialog extends StatefulWidget {

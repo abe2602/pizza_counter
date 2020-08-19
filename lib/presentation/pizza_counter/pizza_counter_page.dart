@@ -44,8 +44,8 @@ class PizzaCounterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Contador de Pizzas',
+          title: Text(
+            S.of(context).appTitle,
             maxLines: 1,
           ),
           actions: [
@@ -81,19 +81,48 @@ class PizzaCounterPage extends StatelessWidget {
                     bloc: bloc,
                   );
                 } else {
-                  return Column(
-                    children: [
-                      Container(
-                        child: Text('PREMIOS'),
-                      ),
-                      ...successState.playersList.map(
-                        (player) => PlayerCard(
-                          name: player.name,
-                          slices: player.slices,
-                          bloc: bloc,
+                  return Container(
+                    //color: PizzaCounterColors.orange,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: GridView.count(
+                            crossAxisCount: 2,
+                            shrinkWrap: false,
+                            //vai ocupar os espaços que precisa e nada mais
+                            children: List.generate(
+                              successState.playersList.length,
+                              (index) => PlayerCard(
+                                name: successState.playersList[index].name,
+                                slices: successState.playersList[index].slices,
+                                bloc: bloc,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        Material(
+                          elevation: 5,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            padding: const EdgeInsets.only(
+                              right: 10,
+                              left: 10,
+                            ),
+                            child: FlatButton(
+                              color: Colors.red,
+                              onPressed: () {},
+                              child: Text(
+                                S.of(context).finishRound,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 }
               },
@@ -106,7 +135,6 @@ class PizzaCounterPage extends StatelessWidget {
       );
 }
 
-//todo: será feito nas próximas tasks
 class PlayerCard extends StatelessWidget {
   const PlayerCard(
       {@required this.bloc, @required this.name, @required this.slices})
@@ -120,23 +148,60 @@ class PlayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
-        child: Material(
-          elevation: 1,
+        padding: const EdgeInsets.only(
+          top: 10,
+        ),
+        child: Card(
+          elevation: 2,
           color: Colors.white,
           child: Container(
             margin: const EdgeInsets.all(10),
-            child: Row(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Image.asset('images/red_delete.png'),
+                ),
                 Text(name),
+                Text(
+                  slices.toString(),
+                ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text('- '),
-                    Text(
-                      slices.toString(),
+                    Expanded(
+                      child: FlatButton(
+                        onPressed: () {},
+                        child: Text(
+                          S.of(context).minus,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: (MediaQuery.of(context).size.width +
+                                    MediaQuery.of(context).size.height) /
+                                45,
+                          ),
+                        ),
+                      ),
                     ),
-                    Text(' +'),
+                    Container(
+                      margin: const EdgeInsets.only(right: 2.5, left: 2.5),
+                    ),
+                    Expanded(
+                      child: FlatButton(
+                        color: Colors.red,
+                        onPressed: () {},
+                        child: Text(
+                          S.of(context).plus,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: (MediaQuery.of(context).size.width +
+                                    MediaQuery.of(context).size.height) /
+                                45,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 )
               ],

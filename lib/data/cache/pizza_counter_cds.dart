@@ -9,7 +9,8 @@ class PizzaCounterCDS {
   Future<Box> _openPlayersListBox() => Hive.openBox(_playersBoxKey);
 
   Future<List<PlayerCM>> getPlayersList() => _openPlayersListBox().then((box) {
-        final List<PlayerCM> playersList = box.get(_playersBoxKey);
+        final List<PlayerCM> playersList =
+            box.get(_playersBoxKey)?.cast<PlayerCM>();
 
         if (playersList == null) {
           throw EmptyCachedListException();
@@ -20,7 +21,8 @@ class PizzaCounterCDS {
 
   Future<void> addPlayer(PlayerCM player) => _openPlayersListBox().then(
         (box) {
-          final List<PlayerCM> playersList = box.get(_playersBoxKey);
+          final List<PlayerCM> playersList =
+              box.get(_playersBoxKey)?.cast<PlayerCM>();
 
           if (playersList == null) {
             return box.put(_playersBoxKey, <PlayerCM>[player]);

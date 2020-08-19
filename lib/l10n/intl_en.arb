@@ -15,5 +15,9 @@
   "addLabel": "Add",
   "addPlayerLabel": "Add a new player!",
   "noPlayersEmptyStatePrimaryText": "There's no players right now :(.",
-  "noPlayersEmptyStateSecondaryText": "Add some and start to competing!"
+  "noPlayersEmptyStateSecondaryText": "Add some and start to competing!",
+  "finishRound": "FINISH ROUND!",
+  "plus": "+",
+  "minus": "-",
+  "appTitle": "App's name"
 }

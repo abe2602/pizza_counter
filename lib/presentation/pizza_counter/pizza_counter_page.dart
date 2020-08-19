@@ -1,5 +1,6 @@
 import 'package:domain/use_case/get_players_list_uc.dart';
 import 'package:domain/use_case/validate_empty_text_uc.dart';
+import 'package:domain/use_case/add_player_uc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -21,13 +22,15 @@ class PizzaCounterPage extends StatelessWidget {
   })  : assert(bloc != null),
         super(key: key);
 
-  static Widget create(BuildContext context) =>
-      ProxyProvider2<GetPlayersListUC, ValidateEmptyTextUC, PizzaCounterBloc>(
-        update: (context, getPlayersListUC, validateEmptyTextUC, bloc) =>
+  static Widget create(BuildContext context) => ProxyProvider3<GetPlayersListUC,
+          ValidateEmptyTextUC, AddPlayerUC, PizzaCounterBloc>(
+        update: (context, getPlayersListUC, validateEmptyTextUC, addPlayerUC,
+                bloc) =>
             bloc ??
             PizzaCounterBloc(
               getPlayersListUC: getPlayersListUC,
               validateEmptyTextUC: validateEmptyTextUC,
+              addPlayerUC: addPlayerUC,
             ),
         child: Consumer<PizzaCounterBloc>(
           builder: (context, bloc, _) => PizzaCounterPage(
@@ -40,46 +43,62 @@ class PizzaCounterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: SafeArea(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: SingleChildScrollView(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height - 100,
-                child: StreamBuilder(
-                  stream: bloc.onNewState,
-                  builder: (context, snapshot) =>
-                      AsyncSnapshotResponseView<Loading, Error, Success>(
-                    snapshot: snapshot,
-                    successWidgetBuilder: (successState) {
-                      if (successState.playersList.isEmpty) {
-                        return NoPlayersEmptyState(
-                          bloc: bloc,
-                        );
-                      } else {
-                        return Column(
-                          children: [
-                            Container(
-                              child: Text('PREMIOS'),
-                            ),
-                            ...successState.playersList.map(
-                              (player) => PlayerCard(
-                                name: player.name,
-                                slices: player.slices,
-                                bloc: bloc,
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                    },
-                    errorWidgetBuilder: (errorState) => Text(
-                      errorState.toString(),
+        appBar: AppBar(
+          title: const Text(
+            'Contador de Pizzas',
+            maxLines: 1,
+          ),
+          actions: [
+             InkWell(
+                onTap: (){
+                  showDialog(
+                    context: context,
+                    child: PizzaCounterDialog(
+                      onInputTextChangedSink: bloc.onNameValueChangedSink,
+                      onInputTextStatusStream: bloc.nameInputStatusStream,
+                      onInputTextLostFocusSink: bloc.onNameFocusLostSink,
+                      onActionButtonSink: bloc.onAddPlayerSink,
+                      onActionEventStream: bloc.onActionEvent,
                     ),
-                  ),
-                ),
+                  );
+                },
+               child: Container(
+                margin: const EdgeInsets.only(right: 15, left: 15),
+                child:  const Icon(Icons.person_add),
+            ),
+             ),
+          ],
+        ),
+        body: SafeArea(
+          child: StreamBuilder(
+            stream: bloc.onNewState,
+            builder: (context, snapshot) =>
+                AsyncSnapshotResponseView<Loading, Error, Success>(
+              snapshot: snapshot,
+              successWidgetBuilder: (successState) {
+                if (successState.playersList.isEmpty) {
+                  return NoPlayersEmptyState(
+                    bloc: bloc,
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      Container(
+                        child: Text('PREMIOS'),
+                      ),
+                      ...successState.playersList.map(
+                        (player) => PlayerCard(
+                          name: player.name,
+                          slices: player.slices,
+                          bloc: bloc,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
+              errorWidgetBuilder: (errorState) => Text(
+                errorState.toString(),
               ),
             ),
           ),
@@ -135,44 +154,47 @@ class NoPlayersEmptyState extends StatelessWidget {
   final PizzaCounterBloc bloc;
 
   @override
-  Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.all(15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              children: [
-                Text(S.of(context).noPlayersEmptyStatePrimaryText),
-                Text(S.of(context).noPlayersEmptyStateSecondaryText),
-              ],
-            ),
-            Image.asset('images/pizza.png'),
-            FlatButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  child: PizzaCounterDialog(
-                    onInputTextChangedSink: bloc.onNameValueChangedSink,
-                    onInputTextStatusStream: bloc.nameInputStatusStream,
-                    onInputTextLostFocusSink: bloc.onNameFocusLostSink,
-                    onActionButtonSink: bloc.onAddPlayerSink,
-                    onActionEventStream: bloc.onActionEvent,
+  Widget build(BuildContext context) => SingleChildScrollView(
+    child: Container(
+      height: MediaQuery.of(context).size.height - 170,
+          margin: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(
+                children: [
+                  Text(S.of(context).noPlayersEmptyStatePrimaryText),
+                  Text(S.of(context).noPlayersEmptyStateSecondaryText),
+                ],
+              ),
+              Image.asset('images/pizza.png'),
+              FlatButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    child: PizzaCounterDialog(
+                      onInputTextChangedSink: bloc.onNameValueChangedSink,
+                      onInputTextStatusStream: bloc.nameInputStatusStream,
+                      onInputTextLostFocusSink: bloc.onNameFocusLostSink,
+                      onActionButtonSink: bloc.onAddPlayerSink,
+                      onActionEventStream: bloc.onActionEvent,
+                    ),
+                  );
+                },
+                color: PizzaCounterColors.lightRed,
+                child: Container(
+                  alignment: Alignment.bottomCenter,
+                  width: MediaQuery.of(context).size.width,
+                  child: Text(
+                    S.of(context).addPlayerLabel,
+                    style: const TextStyle(color: Colors.black87),
                   ),
-                );
-              },
-              color: PizzaCounterColors.lightRed,
-              child: Container(
-                alignment: Alignment.bottomCenter,
-                width: MediaQuery.of(context).size.width,
-                child: Text(
-                  S.of(context).addPlayerLabel,
-                  style: const TextStyle(color: Colors.black87),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      );
+  );
 }
 
 class PizzaCounterDialog extends StatefulWidget {
@@ -212,7 +234,6 @@ class PizzaCounterDialogState extends State<PizzaCounterDialog> {
         actionStream: widget.onActionEventStream,
         onReceived: (event) {
           Navigator.of(context).pop();
-          widget.onInputTextChangedSink.add(null);
         },
         child: AlertDialog(
           title: Column(
@@ -241,6 +262,7 @@ class PizzaCounterDialogState extends State<PizzaCounterDialog> {
                   FlatButton(
                     onPressed: () {
                       Navigator.pop(context);
+                      widget.onInputTextChangedSink.add('');
                     },
                     child: Text(
                       S.of(context).cancelLabel,

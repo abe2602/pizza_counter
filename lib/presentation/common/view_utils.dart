@@ -107,7 +107,9 @@ class GenericErrorEmptyState extends StatelessWidget {
 }
 
 extension FutureViewUtils on Future<void> {
-  Future<void> addStatusToSink(Sink<InputStatusVM> sink) => then(
+  Future<void> addStatusToSink(
+          Sink<InputStatusVM> sink) =>
+      then(
         (_) {
           sink.add(InputStatusVM.valid);
           return null;
@@ -141,4 +143,3 @@ extension ObservableViewUtils<T> on Stream<T> {
         (data) => sink.add(data),
       );
 }
-

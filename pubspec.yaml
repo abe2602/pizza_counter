@@ -32,6 +32,7 @@ dependencies:
   dio: ^3.0.9
   rflutter_alert: ^1.0.2
   uuid: ^2.2.0
+  flare_flutter: ^1.8.3
   domain:
     path: domain
 

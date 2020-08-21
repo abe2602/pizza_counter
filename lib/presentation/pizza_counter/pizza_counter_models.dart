@@ -16,3 +16,5 @@ class Loading implements PizzaCounterResponseState {}
 class Error implements PizzaCounterResponseState {}
 
 class GenericError implements Error {}
+
+class NameAlreadyAddedError implements Error {}

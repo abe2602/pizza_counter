@@ -15,11 +15,15 @@
   "addLabel": "Adicionar",
   "addPlayerLabel": "Adicione um competidor!",
   "noPlayersEmptyStatePrimaryText": "Não há competidores no momento :(.",
-  "noPlayersEmptyStateSecondaryText": "Adicione alguém e comece a competir!",
+  "noPlayersEmptyStateSecondaryText": "Adicione alguém e comece a comer!",
   "finishRound": "FINALIZAR RODÍZIO",
   "plus": "+",
   "minus": "-",
   "appTitle": "Nome do App",
   "deletePlayerConfirmationLabel": "Você realmente deseja excluir o jogador?",
-  "deleteLabel": "Deletar"
+  "deleteLabel": "Deletar",
+  "okLabel": "OK",
+  "playerAlreadyAddedLabel": "Já existe um jogador com esse nome, tente outro nome!",
+  "noPodiumEmptyStatePrimaryText": "Todos somos campeões, meu Amigo.",
+  "noPodiumEmptyStateSecondaryText": "Vamos começar a comer!"
 }

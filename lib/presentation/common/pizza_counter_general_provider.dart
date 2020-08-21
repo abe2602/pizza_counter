@@ -14,7 +14,7 @@ import 'package:pizza_counter/data/repository/pizza_counter_repository.dart';
 import 'package:pizza_counter/presentation/common/bottom_navigation/navigation_utils.dart';
 import 'package:pizza_counter/presentation/common/route_name_builder.dart';
 import 'package:pizza_counter/presentation/home_screen.dart';
-import 'package:pizza_counter/presentation/pizza_charts/pizza_charts_page.dart';
+import 'package:pizza_counter/presentation/users_charts/users_charts_page.dart';
 import 'package:pizza_counter/presentation/pizza_counter/pizza_counter_page.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -60,7 +60,7 @@ class PizzaCounterGeneralProvider extends StatelessWidget {
               RouteNameBuilder.pizzaGraphResource,
               handler: Handler(
                 handlerFunc: (context, params) =>
-                    PizzaChartsPage.create(context),
+                    UsersChartsPage.create(context),
               ),
             ),
         ),
@@ -75,15 +75,17 @@ class PizzaCounterGeneralProvider extends StatelessWidget {
       ];
 
   List<SingleChildWidget> _buildStreamProviders() => [
-        Provider<PublishSubject<List<int>>>(
-          create: (_) => PublishSubject<List<int>>(),
-          dispose: (context, listDataObservable) => listDataObservable.close(),
+        Provider<PublishSubject<void>>(
+          create: (_) => PublishSubject<void>(),
+          dispose: (context, playersSubject) => playersSubject.close(),
         ),
       ];
 
   List<SingleChildWidget> _buildCDSProviders() => [
-        Provider<PizzaCounterCDS>(
-          create: (_) => PizzaCounterCDS(),
+        ProxyProvider<PublishSubject<void>, PizzaCounterCDS>(
+          update: (context, playersSubject, _) => PizzaCounterCDS(
+            playersDataObservableSink: playersSubject.sink,
+          ),
         ),
       ];
 

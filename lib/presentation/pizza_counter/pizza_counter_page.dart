@@ -71,7 +71,7 @@ class PizzaCounterPage extends StatelessWidget {
                     onInputTextStatusStream: bloc.nameInputStatusStream,
                     onInputTextLostFocusSink: bloc.onNameFocusLostSink,
                     onActionButtonSink: bloc.onAddPlayerSink,
-                    onActionEventStream: bloc.onActionEvent,
+                    onActionEventStream: bloc.onInputTextActionEvent,
                   ),
                 );
               },
@@ -83,63 +83,74 @@ class PizzaCounterPage extends StatelessWidget {
           ],
         ),
         body: SafeArea(
-          child: StreamBuilder(
-            stream: bloc.onNewState,
-            builder: (context, snapshot) =>
-                AsyncSnapshotResponseView<Loading, Error, Success>(
-              snapshot: snapshot,
-              successWidgetBuilder: (successState) {
-                if (successState.playersList.isEmpty) {
-                  return NoPlayersEmptyState(
-                    bloc: bloc,
-                  );
-                } else {
-                  return Container(
-                    //color: PizzaCounterColors.orange,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: GridView.count(
-                            crossAxisCount: 2,
-                            shrinkWrap: false,
-                            //vai ocupar os espaços que precisa e nada mais
-                            children: List.generate(
-                              successState.playersList.length,
-                              (index) => PlayerCard(
-                                player: successState.playersList[index],
-                                bloc: bloc,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Material(
-                          elevation: 5,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            padding: const EdgeInsets.only(
-                              right: 10,
-                              left: 10,
-                            ),
-                            child: FlatButton(
-                              color: Colors.red,
-                              onPressed: () {},
-                              child: Text(
-                                S.of(context).finishRound,
-                                style: const TextStyle(
-                                  color: Colors.white,
+          child: PizzaCounterActionListener(
+            actionStream: bloc.onAddPlayerActionStream,
+            onReceived: (event) {
+              if (event is NameAlreadyAddedError) {
+                showDialog(
+                  context: context,
+                  child: const NonBlockingErrorDialog(),
+                );
+              }
+            },
+            child: StreamBuilder(
+              stream: bloc.onNewState,
+              builder: (context, snapshot) =>
+                  AsyncSnapshotResponseView<Loading, Error, Success>(
+                snapshot: snapshot,
+                successWidgetBuilder: (successState) {
+                  if (successState.playersList.isEmpty) {
+                    return NoPlayersEmptyState(
+                      bloc: bloc,
+                    );
+                  } else {
+                    return Container(
+                      //color: PizzaCounterColors.orange,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: GridView.count(
+                              crossAxisCount: 2,
+                              shrinkWrap: false,
+                              //vai ocupar os espaços que precisa e nada mais
+                              children: List.generate(
+                                successState.playersList.length,
+                                (index) => PlayerCard(
+                                  player: successState.playersList[index],
+                                  bloc: bloc,
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              },
-              errorWidgetBuilder: (errorState) => Text(
-                errorState.toString(),
+                          Material(
+                            elevation: 5,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              padding: const EdgeInsets.only(
+                                right: 10,
+                                left: 10,
+                              ),
+                              child: FlatButton(
+                                color: Colors.red,
+                                onPressed: () {},
+                                child: Text(
+                                  S.of(context).finishRound,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                },
+                errorWidgetBuilder: (errorState) => Text(
+                  errorState.toString(),
+                ),
               ),
             ),
           ),
@@ -196,7 +207,7 @@ class PlayerCard extends StatelessWidget {
                     Expanded(
                       child: FlatButton(
                         onPressed: () {
-                          if(player.slices > 0) {
+                          if (player.slices > 0) {
                             bloc.onRemoveSliceSubject.add(player.id);
                           }
                         },
@@ -285,7 +296,7 @@ class NoPlayersEmptyState extends StatelessWidget {
                       onInputTextStatusStream: bloc.nameInputStatusStream,
                       onInputTextLostFocusSink: bloc.onNameFocusLostSink,
                       onActionButtonSink: bloc.onAddPlayerSink,
-                      onActionEventStream: bloc.onActionEvent,
+                      onActionEventStream: bloc.onInputTextActionEvent,
                     ),
                   );
                 },
@@ -301,6 +312,45 @@ class NoPlayersEmptyState extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      );
+}
+
+class NonBlockingErrorDialog extends StatelessWidget {
+  const NonBlockingErrorDialog({
+    this.primaryButtonAction,
+  });
+
+  final Function primaryButtonAction;
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+        title: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(bottom: 15),
+              alignment: Alignment.center,
+              child: Text(
+                S.of(context).playerAlreadyAddedLabel,
+                style: TextStyle(
+                  color: PizzaCounterColors.mediumGray,
+                  fontSize: (MediaQuery.of(context).size.width +
+                          MediaQuery.of(context).size.height) /
+                      50,
+                ),
+              ),
+            ),
+            FlatButton(
+              color: Colors.red,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                S.of(context).okLabel,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
         ),
       );
 }

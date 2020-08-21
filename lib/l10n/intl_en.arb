@@ -21,5 +21,9 @@
   "minus": "-",
   "appTitle": "App's name",
   "deletePlayerConfirmationLabel": "Do you really want to delete this player?",
-  "deleteLabel": "Delete"
+  "deleteLabel": "Delete",
+  "okLabel": "OK",
+  "playerAlreadyAddedLabel": "Player with this name already added, try another one!",
+  "noPodiumEmptyStatePrimaryText": "We're all champions, my Friend.",
+  "noPodiumEmptyStateSecondaryText": "Let's start eating!"
 }

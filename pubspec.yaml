@@ -33,6 +33,9 @@ dependencies:
   rflutter_alert: ^1.0.2
   uuid: ^2.2.0
   flare_flutter: ^1.8.3
+  pie_chart: ^3.1.1
+  grafpix: ^1.2.8
+  random_color: ^1.0.5
   domain:
     path: domain
 

@@ -6,6 +6,8 @@ class GenericException implements PizzaCounterException {}
 
 class EmptyCachedListException implements PizzaCounterException {}
 
+class NameAlreadyAddedException implements PizzaCounterException {}
+
 class CachedMovieDetailNotFoundException implements PizzaCounterException {}
 
 class UnexpectedException implements PizzaCounterException {}

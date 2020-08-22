@@ -26,7 +26,7 @@ Quando não há nenhum "comedor" (usuário do app), um empty state será exibido
 
 ![alt text](https://i.imgur.com/DTLrscs.png)
 
-Quando há jogadores, é possível visualiza o "pódio" dos maiores comilões! Além de um gráfico mostrando a partição dos pedaços comidos pelo grupo todo.
+Quando há jogadores, é possível visualizar o "pódio" dos maiores comilões! Além de um gráfico mostrando a partição dos pedaços comidos pelo grupo todo.
 
 ## Autor
 Bruno Abe e Edson Toma

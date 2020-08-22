@@ -155,6 +155,7 @@ class NoUsersEmptyState extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     S.of(context).noPodiumEmptyStatePrimaryText,
@@ -185,7 +186,7 @@ class PizzaChart extends StatefulWidget {
   const PizzaChart({
     @required this.playersList,
     @required this.chartData,
-  })  : assert(playersList != null);
+  }) : assert(playersList != null);
 
   final List<Player> playersList;
   final Map<String, double> chartData;
@@ -225,6 +226,7 @@ class _PizzaChartState extends State<PizzaChart> {
   Widget build(BuildContext context) => Container(
         child: Center(
           child: PieChart(
+            key: UniqueKey(),
             dataMap: widget.chartData,
             animationDuration: const Duration(milliseconds: 1000),
             chartLegendSpacing: 40,

@@ -5,6 +5,7 @@ import 'package:domain/use_case/add_player_uc.dart';
 import 'package:domain/use_case/delete_player_uc.dart';
 import 'package:domain/use_case/add_slice_uc.dart';
 import 'package:domain/use_case/remove_slice_uc.dart';
+import 'package:domain/use_case/finish_game_uc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -26,25 +27,33 @@ class PizzaCounterPage extends StatelessWidget {
   })  : assert(bloc != null),
         super(key: key);
 
-  static Widget create(BuildContext context) => ProxyProvider6<
+  static Widget create(BuildContext context) => ProxyProvider7<
           GetPlayersListUC,
           ValidateEmptyTextUC,
           AddPlayerUC,
           DeletePlayerUC,
           AddSliceUC,
           RemoveSliceUC,
+          FinishGameUC,
           PizzaCounterBloc>(
-        update: (context, getPlayersListUC, validateEmptyTextUC, addPlayerUC,
-                deletePlayerUC, addSliceUC, removeSliceUC, bloc) =>
+        update: (context,
+                getPlayersListUC,
+                validateEmptyTextUC,
+                addPlayerUC,
+                deletePlayerUC,
+                addSliceUC,
+                removeSliceUC,
+                finishGameUC,
+                bloc) =>
             bloc ??
             PizzaCounterBloc(
-              getPlayersListUC: getPlayersListUC,
-              validateEmptyTextUC: validateEmptyTextUC,
-              addPlayerUC: addPlayerUC,
-              deletePlayerUC: deletePlayerUC,
-              addSliceUC: addSliceUC,
-              removeSliceUC: removeSliceUC,
-            ),
+                getPlayersListUC: getPlayersListUC,
+                validateEmptyTextUC: validateEmptyTextUC,
+                addPlayerUC: addPlayerUC,
+                deletePlayerUC: deletePlayerUC,
+                addSliceUC: addSliceUC,
+                removeSliceUC: removeSliceUC,
+                finishGameUC: finishGameUC),
         child: Consumer<PizzaCounterBloc>(
           builder: (context, bloc, _) => PizzaCounterPage(
             bloc: bloc,
@@ -89,7 +98,9 @@ class PizzaCounterPage extends StatelessWidget {
               if (event is NameAlreadyAddedError) {
                 showDialog(
                   context: context,
-                  child: const NonBlockingErrorDialog(),
+                  child: SingleActionDialog(
+                    title: S.of(context).playerAlreadyAddedLabel,
+                  ),
                 );
               }
             },
@@ -133,7 +144,19 @@ class PizzaCounterPage extends StatelessWidget {
                               ),
                               child: FlatButton(
                                 color: Colors.red,
-                                onPressed: () {},
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    child: SingleActionDialog(
+                                      title: S
+                                          .of(context)
+                                          .finishGameConfirmationLabel,
+                                      primaryButtonAction: () {
+                                        bloc.onFinishGameSink.add(null);
+                                      },
+                                    ),
+                                  );
+                                },
                                 child: Text(
                                   S.of(context).finishRound,
                                   style: const TextStyle(
@@ -316,11 +339,13 @@ class NoPlayersEmptyState extends StatelessWidget {
       );
 }
 
-class NonBlockingErrorDialog extends StatelessWidget {
-  const NonBlockingErrorDialog({
+class SingleActionDialog extends StatelessWidget {
+  const SingleActionDialog({
+    @required this.title,
     this.primaryButtonAction,
   });
 
+  final String title;
   final Function primaryButtonAction;
 
   @override
@@ -331,7 +356,7 @@ class NonBlockingErrorDialog extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 15),
               alignment: Alignment.center,
               child: Text(
-                S.of(context).playerAlreadyAddedLabel,
+                title,
                 style: TextStyle(
                   color: PizzaCounterColors.mediumGray,
                   fontSize: (MediaQuery.of(context).size.width +
@@ -343,6 +368,10 @@ class NonBlockingErrorDialog extends StatelessWidget {
             FlatButton(
               color: Colors.red,
               onPressed: () {
+                if(primaryButtonAction != null) {
+                  primaryButtonAction();
+                }
+
                 Navigator.pop(context);
               },
               child: Text(

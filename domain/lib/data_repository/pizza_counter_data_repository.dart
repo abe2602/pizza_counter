@@ -6,4 +6,5 @@ abstract class PizzaCounterDataRepository {
   Future<void> deletePlayer(String playerId);
   Future<void> addSlice(String playerId);
   Future<void> removeSlice(String playerId);
+  Future<void> finishGame();
 }

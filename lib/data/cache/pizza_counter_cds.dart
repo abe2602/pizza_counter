@@ -64,6 +64,19 @@ class PizzaCounterCDS {
         },
       );
 
+  Future<void> finishGame() => _openPlayersListBox().then(
+        (box) {
+      final List<PlayerCM> playersList =
+      box.get(_playersBoxKey)?.cast<PlayerCM>();
+
+      if (playersList != null) {
+        return box.delete(_playersBoxKey);
+      } else {
+        return Future.value(null);
+      }
+    },
+  );
+
   Future<void> addSlice(String playerId) => _openPlayersListBox().then(
         (box) {
           final List<PlayerCM> playersList =

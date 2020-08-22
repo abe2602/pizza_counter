@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:domain/exceptions.dart';
 import 'package:domain/model/player.dart';
+import 'package:domain/use_case/finish_game_uc.dart';
 import 'package:domain/use_case/get_players_list_uc.dart';
 import 'package:domain/use_case/validate_empty_text_uc.dart';
 import 'package:domain/use_case/add_player_uc.dart';
@@ -23,9 +24,14 @@ class PizzaCounterBloc with SubscriptionBag {
     @required this.deletePlayerUC,
     @required this.removeSliceUC,
     @required this.addSliceUC,
+    @required this.finishGameUC,
     @required this.validateEmptyTextUC,
   })  : assert(getPlayersListUC != null),
+        assert(addPlayerUC != null),
+        assert(deletePlayerUC != null),
+        assert(removeSliceUC != null),
         assert(validateEmptyTextUC != null),
+        assert(finishGameUC != null),
         assert(addPlayerUC != null) {
     MergeStream(
       [
@@ -57,6 +63,13 @@ class PizzaCounterBloc with SubscriptionBag {
         .listen(_onNewStateSubject.add)
         .addTo(subscriptionsBag);
 
+    _onFinishGameSubject
+        .flatMap(
+          (_) => _finishGame(),
+        )
+        .listen(_onNewStateSubject.add)
+        .addTo(subscriptionsBag);
+
     _onDeletePlayerSubject.stream
         .flatMap(
           _deletePlayer,
@@ -79,6 +92,7 @@ class PizzaCounterBloc with SubscriptionBag {
         .addTo(subscriptionsBag);
   }
 
+  final FinishGameUC finishGameUC;
   final RemoveSliceUC removeSliceUC;
   final AddSliceUC addSliceUC;
   final DeletePlayerUC deletePlayerUC;
@@ -89,6 +103,7 @@ class PizzaCounterBloc with SubscriptionBag {
   final _onNewStateSubject = BehaviorSubject<PizzaCounterResponseState>();
   final _nameInputStatusSubject = PublishSubject<InputStatusVM>();
   final _onNameFocusLostSubject = PublishSubject<void>();
+  final _onFinishGameSubject = PublishSubject<void>();
   final _onAddPlayerSubject = PublishSubject<PizzaCounterResponseState>();
   final _onAddPlayerActionSubject = PublishSubject<PizzaCounterResponseState>();
   final _onNewInputTextActionSubject = PublishSubject<InputStatusVM>();
@@ -108,7 +123,9 @@ class PizzaCounterBloc with SubscriptionBag {
       _onNewInputTextActionSubject.stream.take(1);
 
   Stream<PizzaCounterResponseState> get onAddPlayerActionStream =>
-      _onAddPlayerActionSubject;
+      _onAddPlayerActionSubject.stream;
+
+  Sink<void> get onFinishGameSink => _onFinishGameSubject.sink;
 
   Sink<void> get onTryAgain => _onTryAgainSubject.sink;
 
@@ -196,6 +213,20 @@ class PizzaCounterBloc with SubscriptionBag {
     }
   }
 
+  Stream<PizzaCounterResponseState> _finishGame() async* {
+    yield Loading();
+
+    try {
+      await finishGameUC.getFuture();
+      _listSize = 0;
+      yield const Success(
+        playersList: [],
+      );
+    } catch (e) {
+      yield Error();
+    }
+  }
+
   Stream<PizzaCounterResponseState> _addSlice(String playerId) async* {
     try {
       await addSliceUC.getFuture(
@@ -242,6 +273,7 @@ class PizzaCounterBloc with SubscriptionBag {
           .addStatusToSink(sink);
 
   void dispose() {
+    _onFinishGameSubject.close();
     _onAddPlayerActionSubject.close();
     _onRemoveSliceSubject.close();
     _onAddSliceSubject.close();

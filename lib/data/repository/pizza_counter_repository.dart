@@ -48,4 +48,8 @@ class PizzaCounterRepository implements PizzaCounterDataRepository {
   @override
   Future<void> deletePlayer(String playerId) =>
       pizzaCounterCDS.deletePlayer(playerId);
+
+  @override
+  Future<void> finishGame() =>
+      pizzaCounterCDS.finishGame();
 }

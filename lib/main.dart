@@ -41,7 +41,7 @@ class MainWidgetState extends State<MainWidget> {
   @override
   Widget build(BuildContext context) => PizzaCounterGeneralProvider(
         child: AdaptiveApp(
-          localizationsDelegates: [
+          localizationsDelegates: const [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,

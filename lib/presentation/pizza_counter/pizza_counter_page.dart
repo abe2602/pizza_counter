@@ -1,11 +1,11 @@
 import 'package:domain/model/player.dart';
-import 'package:domain/use_case/get_players_list_uc.dart';
-import 'package:domain/use_case/validate_empty_text_uc.dart';
 import 'package:domain/use_case/add_player_uc.dart';
-import 'package:domain/use_case/delete_player_uc.dart';
 import 'package:domain/use_case/add_slice_uc.dart';
-import 'package:domain/use_case/remove_slice_uc.dart';
+import 'package:domain/use_case/delete_player_uc.dart';
 import 'package:domain/use_case/finish_game_uc.dart';
+import 'package:domain/use_case/get_players_list_uc.dart';
+import 'package:domain/use_case/remove_slice_uc.dart';
+import 'package:domain/use_case/validate_empty_text_uc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -15,9 +15,9 @@ import 'package:pizza_counter/presentation/common/form_text_field.dart';
 import 'package:pizza_counter/presentation/common/input_status_vm.dart';
 import 'package:pizza_counter/presentation/common/pizza_counter_action_listener.dart';
 import 'package:pizza_counter/presentation/common/pizza_counter_colors.dart';
+import 'package:pizza_counter/presentation/common/view_utils.dart';
 import 'package:pizza_counter/presentation/pizza_counter/pizza_counter_bloc.dart';
 import 'package:pizza_counter/presentation/pizza_counter/pizza_counter_models.dart';
-import 'package:pizza_counter/presentation/common/view_utils.dart';
 import 'package:provider/provider.dart';
 
 class PizzaCounterPage extends StatelessWidget {
@@ -27,33 +27,34 @@ class PizzaCounterPage extends StatelessWidget {
   })  : assert(bloc != null),
         super(key: key);
 
-  static Widget create(BuildContext context) => ProxyProvider7<
+  static Widget create(BuildContext context) => ProxyProvider6<
           GetPlayersListUC,
           ValidateEmptyTextUC,
           AddPlayerUC,
           DeletePlayerUC,
           AddSliceUC,
           RemoveSliceUC,
-          FinishGameUC,
           PizzaCounterBloc>(
-        update: (context,
-                getPlayersListUC,
-                validateEmptyTextUC,
-                addPlayerUC,
-                deletePlayerUC,
-                addSliceUC,
-                removeSliceUC,
-                finishGameUC,
-                bloc) =>
+        update: (
+          context,
+          getPlayersListUC,
+          validateEmptyTextUC,
+          addPlayerUC,
+          deletePlayerUC,
+          addSliceUC,
+          removeSliceUC,
+          bloc,
+        ) =>
             bloc ??
             PizzaCounterBloc(
-                getPlayersListUC: getPlayersListUC,
-                validateEmptyTextUC: validateEmptyTextUC,
-                addPlayerUC: addPlayerUC,
-                deletePlayerUC: deletePlayerUC,
-                addSliceUC: addSliceUC,
-                removeSliceUC: removeSliceUC,
-                finishGameUC: finishGameUC),
+              getPlayersListUC: getPlayersListUC,
+              validateEmptyTextUC: validateEmptyTextUC,
+              addPlayerUC: addPlayerUC,
+              deletePlayerUC: deletePlayerUC,
+              addSliceUC: addSliceUC,
+              removeSliceUC: removeSliceUC,
+              finishGameUC: Provider.of<FinishGameUC>(context),
+            ),
         child: Consumer<PizzaCounterBloc>(
           builder: (context, bloc, _) => PizzaCounterPage(
             bloc: bloc,
@@ -368,7 +369,7 @@ class SingleActionDialog extends StatelessWidget {
             FlatButton(
               color: Colors.red,
               onPressed: () {
-                if(primaryButtonAction != null) {
+                if (primaryButtonAction != null) {
                   primaryButtonAction();
                 }
 

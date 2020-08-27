@@ -1,3 +1,6 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
@@ -22,13 +25,20 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Pass all uncaught errors from the framework to Crashlytics.
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+
   Hive
     ..init((await getApplicationDocumentsDirectory()).path)
     ..registerAdapter(
       PlayerCMAdapter(),
     );
 
-  runApp(MainWidget());
+  runApp(
+    PizzaCounterGeneralProvider(
+      builder: (context) => MainWidget(),
+    ),
+  );
 }
 
 //Transformei o MainWidget em Statefull para ter acesso ao dispose
@@ -39,21 +49,20 @@ class MainWidget extends StatefulWidget {
 
 class MainWidgetState extends State<MainWidget> {
   @override
-  Widget build(BuildContext context) => PizzaCounterGeneralProvider(
-        child: AdaptiveApp(
-          localizationsDelegates: const [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          primaryColor: Colors.red,
-
-          //Precisamos usar o onGenerateTitle para ter certeza que teremos um
-          //context com o Locale já pronto para uso
-          onGenerateTitle: (context) => S.of(context).appName,
-        ),
+  Widget build(BuildContext context) => AdaptiveApp(
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+        primaryColor: Colors.red,
+        //Precisamos usar o onGenerateTitle para ter certeza que teremos um
+        //context com o Locale já pronto para uso
+        onGenerateTitle: (context) => S.of(context).appName,
+        analytics: Provider.of<FirebaseAnalytics>(context),
+        screenNameExtractor: Provider.of<ScreenNameExtractor>(context),
       );
 
   @override

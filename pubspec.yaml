@@ -38,6 +38,10 @@ dependencies:
   pie_chart: ^3.1.1
   grafpix: ^1.2.8
   random_color: ^1.0.5
+  firebase_admob: 0.9.3+4
+  firebase_core: ^0.4.2+1
+  firebase_analytics: ^5.0.16
+  firebase_crashlytics: ^0.1.4
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,7 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pizza_counter/admob.dart';
 import 'package:pizza_counter/generated/l10n.dart';
 import 'package:pizza_counter/presentation/common/bottom_navigation/adaptive_bottom_navigation_scaffold.dart';
 import 'package:pizza_counter/presentation/common/bottom_navigation/bottom_navigation_tab.dart';
@@ -15,7 +17,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  static const targetingInfo = MobileAdTargetingInfo(
+    testDevices: AddMobIds.appId != null ? [AddMobIds.appId] : null,
+    keywords: [
+      'food',
+      'drink',
+      'pizza',
+    ],
+  );
+  BannerAd bannerAd;
   List<BottomNavigationTab> _navigationBarItems;
+
+  BannerAd buildBannerAd() => BannerAd(
+        adUnitId: AddMobIds.bannerId,
+        targetingInfo: targetingInfo,
+        size: AdSize.banner,
+        listener: print,
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAdMob.instance.initialize(appId: AddMobIds.appId);
+    bannerAd = buildBannerAd()..load();
+  }
 
   @override
   void didChangeDependencies() {
@@ -53,7 +78,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => AdaptiveBottomNavigationScaffold(
+  Widget build(BuildContext context) {
+    bannerAd
+      ..load()
+      ..show();
+    return SafeArea(
+      child: AdaptiveBottomNavigationScaffold(
         navigationBarItems: _navigationBarItems,
-      );
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    bannerAd?.dispose();
+  }
 }

@@ -31,5 +31,9 @@ Quando há jogadores, é possível visualizar o "pódio" dos maiores comilões! 
 ## Autor
 Bruno Abe e Edson Toma
 
+## Imagens
+As imagens utilizadas são livres de direitos autorais e, conforme licença, precisar ter suas fontes devidamente creditadas, sendo elas:
+https://www.freevector.com/pizza-icons# (Splash e ícone) e https://www.manypixels.co (EmptyStates)
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

@@ -23,6 +23,7 @@
 # Android related
 android/key.properties
 android/key.jks
+android/app/google-services.json
 
 # Flutter/Dart/Pub related
 **/doc/api/

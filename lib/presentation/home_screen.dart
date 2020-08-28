@@ -17,20 +17,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const targetingInfo = MobileAdTargetingInfo(
-    testDevices: AddMobIds.appId != null ? [AddMobIds.appId] : null,
-    keywords: [
-      'food',
-      'drink',
-      'pizza',
-    ],
-  );
   BannerAd bannerAd;
   List<BottomNavigationTab> _navigationBarItems;
 
   BannerAd buildBannerAd() => BannerAd(
-        adUnitId: AddMobIds.bannerId,
-        targetingInfo: targetingInfo,
+        adUnitId: AddMobConfig.bannerId,
+        targetingInfo: AddMobConfig.targetingInfo,
         size: AdSize.banner,
         listener: print,
       );
@@ -38,12 +30,23 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    FirebaseAdMob.instance.initialize(appId: AddMobIds.appId);
+    // AddMobConfig é uma classe custom, escondida do git
+    FirebaseAdMob.instance.initialize(appId: AddMobConfig.appId);
     bannerAd = buildBannerAd()..load();
   }
 
   @override
   void didChangeDependencies() {
+    // para instanciar o banner apenas uma vez
+    if (_navigationBarItems == null) {
+      bannerAd
+        ..load()
+        ..show(
+          anchorType: AnchorType.top,
+          anchorOffset:
+              MediaQuery.of(context).padding.top + AddMobConfig.bannerPadding,
+        );
+    }
     _navigationBarItems ??= [
       BottomNavigationTab(
         bottomNavigationBarItem: BottomNavigationBarItem(
@@ -78,16 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    bannerAd
-      ..load()
-      ..show();
-    return SafeArea(
-      child: AdaptiveBottomNavigationScaffold(
+  Widget build(BuildContext context) => AdaptiveBottomNavigationScaffold(
         navigationBarItems: _navigationBarItems,
-      ),
-    );
-  }
+      );
 
   @override
   void dispose() {

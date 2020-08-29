@@ -1,5 +1,7 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pizza_counter/admob.dart';
 import 'package:pizza_counter/generated/l10n.dart';
 import 'package:pizza_counter/presentation/common/bottom_navigation/adaptive_bottom_navigation_scaffold.dart';
 import 'package:pizza_counter/presentation/common/bottom_navigation/bottom_navigation_tab.dart';
@@ -15,10 +17,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  BannerAd bannerAd;
   List<BottomNavigationTab> _navigationBarItems;
+
+  BannerAd buildBannerAd() => BannerAd(
+        adUnitId: AddMobConfig.bannerId,
+        targetingInfo: AddMobConfig.targetingInfo,
+        size: AdSize.banner,
+        listener: print,
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    // AddMobConfig é uma classe custom, escondida do git
+    FirebaseAdMob.instance.initialize(appId: AddMobConfig.appId);
+    bannerAd = buildBannerAd()..load();
+  }
 
   @override
   void didChangeDependencies() {
+    // para instanciar o banner apenas uma vez
+    if (_navigationBarItems == null) {
+      bannerAd
+        ..load()
+        ..show(
+          anchorType: AnchorType.top,
+          anchorOffset:
+              MediaQuery.of(context).padding.top + AddMobConfig.bannerPadding,
+        );
+    }
     _navigationBarItems ??= [
       BottomNavigationTab(
         bottomNavigationBarItem: BottomNavigationBarItem(
@@ -56,4 +84,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) => AdaptiveBottomNavigationScaffold(
         navigationBarItems: _navigationBarItems,
       );
+
+  @override
+  void dispose() {
+    super.dispose();
+    bannerAd?.dispose();
+  }
 }

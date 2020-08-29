@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:domain/data_repository/pizza_counter_data_repository.dart';
-import 'package:domain/use_case/finish_game_uc.dart';
-import 'package:domain/use_case/get_players_list_uc.dart';
 import 'package:domain/use_case/add_player_uc.dart';
 import 'package:domain/use_case/add_slice_uc.dart';
-import 'package:domain/use_case/remove_slice_uc.dart';
 import 'package:domain/use_case/delete_player_uc.dart';
+import 'package:domain/use_case/finish_game_uc.dart';
+import 'package:domain/use_case/get_players_list_uc.dart';
+import 'package:domain/use_case/remove_slice_uc.dart';
 import 'package:domain/use_case/validate_empty_text_uc.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart' hide Router;
 import 'package:pizza_counter/data/cache/pizza_counter_cds.dart';
@@ -15,22 +17,29 @@ import 'package:pizza_counter/data/repository/pizza_counter_repository.dart';
 import 'package:pizza_counter/presentation/common/bottom_navigation/navigation_utils.dart';
 import 'package:pizza_counter/presentation/common/route_name_builder.dart';
 import 'package:pizza_counter/presentation/home_screen.dart';
-import 'package:pizza_counter/presentation/users_charts/users_charts_page.dart';
 import 'package:pizza_counter/presentation/pizza_counter/pizza_counter_page.dart';
+import 'package:pizza_counter/presentation/users_charts/users_charts_page.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PizzaCounterGeneralProvider extends StatelessWidget {
   const PizzaCounterGeneralProvider({
-    @required this.child,
-  }) : assert(child != null);
+    @required this.builder,
+  }) : assert(builder != null);
 
-  final Widget child;
+  final WidgetBuilder builder;
 
   @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
+          Provider<FirebaseAnalytics>(
+            create: (_) => FirebaseAnalytics(),
+          ),
+          Provider<ScreenNameExtractor>(
+            create: (_) =>
+                (settings) => RouteNameBuilder.extractScreenName(settings.name),
+          ),
           ..._buildStreamProviders(),
           ..._buildCDSProviders(),
           ..._buildRDSProviders(),
@@ -38,7 +47,7 @@ class PizzaCounterGeneralProvider extends StatelessWidget {
           ..._buildUseCaseProviders(),
           ..._buildRouteFactory(),
         ],
-        child: child,
+        child: builder(context),
       );
 
   List<SingleChildWidget> _buildRouteFactory() => [

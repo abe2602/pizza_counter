@@ -1,4 +1,5 @@
 {
+  "@@locale": "pt_BR",
   "appName" : "PizzaCounter",
   "genericErrorMessage": "Erro genérico",
   "tryAgainButtonLabel": "Tente Novamente",

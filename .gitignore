@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+lib/admob.dart
 
 # IntelliJ related
 *.iml
@@ -19,6 +20,11 @@
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
 #.vscode/
+
+# Android related
+android/key.properties
+android/key.jks
+android/app/google-services.json
 
 # Flutter/Dart/Pub related
 **/doc/api/

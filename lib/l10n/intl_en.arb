@@ -1,4 +1,5 @@
 {
+  "@@locale": "en",
   "appName" : "PizzaCounter",
   "genericErrorMessage": "Generic Error",
   "tryAgainButtonLabel": "Try Again",

@@ -4,9 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:grafpix/icons.dart';
-import 'package:pie_chart/pie_chart.dart';
-import 'package:pizza_counter/generated/l10n.dart';
 import 'package:grafpix/pixbuttons/medal.dart';
+import 'package:pie_chart/pie_chart.dart';
+import 'package:pizza_counter/admob.dart';
+import 'package:pizza_counter/generated/l10n.dart';
 import 'package:pizza_counter/presentation/common/async_snapshot_response_view.dart';
 import 'package:pizza_counter/presentation/common/pizza_counter_colors.dart';
 import 'package:pizza_counter/presentation/users_charts/users_charts_bloc.dart';
@@ -70,6 +71,9 @@ class UsersChartsPage extends StatelessWidget {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
+                      const SizedBox(
+                        height: AddMobConfig.bannerPadding,
+                      ),
                       Column(
                         children: [
                           ...successState.playersPodium

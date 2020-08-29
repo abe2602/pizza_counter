@@ -1,4 +1,4 @@
-package com.example.pizza_counter
+package br.com.mobyle.pizza_counter
 
 import io.flutter.embedding.android.FlutterActivity
 

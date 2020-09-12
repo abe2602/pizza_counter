@@ -69,6 +69,8 @@ class PizzaCounterCDS {
       final List<PlayerCM> playersList =
       box.get(_playersBoxKey)?.cast<PlayerCM>();
 
+      playersDataObservableSink.add(null);
+      
       if (playersList != null) {
         return box.delete(_playersBoxKey);
       } else {

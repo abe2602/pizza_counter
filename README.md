@@ -1,6 +1,7 @@
 # Pizza Counter!
 Esse repositório abriga o código de um contador de pedaços de pizza para ser utilizado entre amigos ou em rodízios,
 o projeto foi desenvolvido inteiramente em Flutter, utilizando a arquitetura Bloc, seguindo os conceitos de Clean Architecture.
+App pode ser encontrado aqui: https://play.google.com/store/apps/details?id=br.com.mobyle.pizza_counter , espero que gostem!
 
 ## Tecnologias utilizadas
 - [Dio](https://pub.dev/packages/dio)

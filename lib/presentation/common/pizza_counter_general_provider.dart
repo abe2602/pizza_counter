@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:domain/data_observables/banner_size.dart';
 import 'package:domain/data_repository/pizza_counter_data_repository.dart';
 import 'package:domain/use_case/add_player_uc.dart';
 import 'package:domain/use_case/add_slice_uc.dart';
@@ -23,7 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:rxdart/rxdart.dart';
 
-class PizzaCounterGeneralProvider extends StatelessWidget {
+class PizzaCounterGeneralProvider extends StatefulWidget {
   const PizzaCounterGeneralProvider({
     @required this.builder,
   }) : assert(builder != null);
@@ -31,8 +32,24 @@ class PizzaCounterGeneralProvider extends StatelessWidget {
   final WidgetBuilder builder;
 
   @override
+  _PizzaCounterGeneralProviderState createState() =>
+      _PizzaCounterGeneralProviderState();
+}
+
+class _PizzaCounterGeneralProviderState
+    extends State<PizzaCounterGeneralProvider> {
+  final _bannerSizeSubject = BehaviorSubject<double>.seeded(0);
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bannerSizeSubject.close();
+  }
+
+  @override
   Widget build(BuildContext context) => MultiProvider(
         providers: [
+          ..._buildDataObservables(),
           Provider<FirebaseAnalytics>(
             create: (_) => FirebaseAnalytics(),
           ),
@@ -47,8 +64,17 @@ class PizzaCounterGeneralProvider extends StatelessWidget {
           ..._buildUseCaseProviders(),
           ..._buildRouteFactory(),
         ],
-        child: builder(context),
+        child: widget.builder(context),
       );
+
+  List<SingleChildWidget> _buildDataObservables() => [
+        Provider<BannerSizeStream>(
+          create: (_) => BannerSizeStream(_bannerSizeSubject),
+        ),
+        Provider<BannerSizeSink>(
+          create: (_) => BannerSizeSink(_bannerSizeSubject),
+        ),
+      ];
 
   List<SingleChildWidget> _buildRouteFactory() => [
         Provider<Router>(

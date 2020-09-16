@@ -1,3 +1,4 @@
+import 'package:domain/data_observables/banner_size.dart';
 import 'package:domain/model/player.dart';
 import 'package:domain/use_case/get_players_list_uc.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/widgets.dart';
 import 'package:grafpix/icons.dart';
 import 'package:grafpix/pixbuttons/medal.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'package:pizza_counter/admob.dart';
 import 'package:pizza_counter/generated/l10n.dart';
 import 'package:pizza_counter/presentation/common/async_snapshot_response_view.dart';
 import 'package:pizza_counter/presentation/common/pizza_counter_colors.dart';
@@ -71,8 +71,11 @@ class UsersChartsPage extends StatelessWidget {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      const SizedBox(
-                        height: AddMobConfig.bannerPadding,
+                      StreamBuilder<double>(
+                        stream: Provider.of<BannerSizeStream>(context),
+                        builder: (context, snapshot) => SizedBox(
+                          height: snapshot.data,
+                        ),
                       ),
                       Column(
                         children: [

@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:domain/data_observables/banner_size.dart';
 import 'package:domain/model/player.dart';
 import 'package:domain/use_case/add_player_uc.dart';
 import 'package:domain/use_case/add_slice_uc.dart';
@@ -11,7 +12,6 @@ import 'package:domain/use_case/validate_empty_text_uc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pizza_counter/admob.dart';
 import 'package:pizza_counter/generated/l10n.dart';
 import 'package:pizza_counter/presentation/common/async_snapshot_response_view.dart';
 import 'package:pizza_counter/presentation/common/form_text_field.dart';
@@ -124,8 +124,11 @@ class PizzaCounterPage extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          const SizedBox(
-                            height: AddMobConfig.bannerPadding,
+                          StreamBuilder<double>(
+                            stream: Provider.of<BannerSizeStream>(context),
+                            builder: (context, snapshot) => SizedBox(
+                              height: snapshot.data,
+                            ),
                           ),
                           Expanded(
                             child: GridView.count(
